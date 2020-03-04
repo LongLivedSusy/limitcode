@@ -529,7 +529,7 @@ class sms():
         self.modelname = "T1qqqqLL"
         # decay chain
         self.label= "pp #rightarrow #tilde{g}#tilde{g}, #tilde{g} #rightarrow q#bar{q}#tilde{#chi}^{#pm}_{1}"
-        self.masslabel = "ctau = 200"
+        self.masslabel = "c#tau(#tilde{#chi}^{#pm}) = 200 cm"
         # plot boundary. The top 1/4 of the y axis is taken by the legend
         self.Xmin = 1000
         self.Xmax = 2800

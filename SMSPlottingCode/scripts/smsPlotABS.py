@@ -3,6 +3,8 @@ from array import *
 from sms import *
 from color import *
 
+samsyoffset = 0.018
+
 class smsPlotABS(object):
     # modelname is the sms name (see sms.py)
     # histo is the 2D xsec map
@@ -83,27 +85,27 @@ class smsPlotABS(object):
         graphWhite.SetLineWidth(3)
         graphWhite.SetPoint(0,self.model.Xmin, self.model.Ymax)
         graphWhite.SetPoint(1,self.model.Xmax, self.model.Ymax)
-        graphWhite.SetPoint(2,self.model.Xmax, self.model.Ymax*0.7)
-        graphWhite.SetPoint(3,self.model.Xmin, self.model.Ymax*0.7)
+        graphWhite.SetPoint(2,self.model.Xmax, self.model.Ymax*0.787)
+        graphWhite.SetPoint(3,self.model.Xmin, self.model.Ymax*0.787)
         graphWhite.SetPoint(4,self.model.Xmin, self.model.Ymax)
         graphWhite.Draw("FSAME")
         graphWhite.Draw("LSAME")
         self.c.graphWhite = graphWhite
-        
+
         # CMS LABEL
         if "Simulation" in self.preliminary:
-            textCMS = rt.TLatex(0.15,0.98,"CMS %s" %(self.preliminary.replace("_"," ")))
+            textCMS = rt.TLatex(0.15,0.97,"CMS %s" %(self.preliminary.replace("_"," ")))
         else:
-            textCMS = rt.TLatex(0.15,0.98,"CMS #scale[0.8]{#font[52]{%s}}" %(self.preliminary.replace("_"," ")))
+            textCMS = rt.TLatex(0.15,0.97,"CMS #scale[0.8]{#font[52]{%s}}" %(self.preliminary.replace("_"," ")))
         textCMS.SetNDC()
         textCMS.SetTextAlign(13)
         textCMS.SetTextFont(62)
         textCMS.SetTextSize(0.05)
         textCMS.Draw()
         if float(self.lumi) > 1000000.:
-            textCMS1 = rt.TLatex(0.57,0.98,"%.0f ab^{-1} (%s TeV)" %(float(self.lumi)/1000000., self.energy))
+            textCMS1 = rt.TLatex(0.57,0.97,"%.0f ab^{-1} (%s TeV)" %(float(self.lumi)/1000000., self.energy))
         else:
-            textCMS1 = rt.TLatex(0.57,0.98,"%.1f fb^{-1} (%s TeV)" %(float(self.lumi)/1000., self.energy))
+            textCMS1 = rt.TLatex(0.57,0.97,"%.1f fb^{-1} (%s TeV)" %(float(self.lumi)/1000., self.energy))
         textCMS1.SetNDC()
         textCMS1.SetTextAlign(13)
         textCMS1.SetTextFont(42)
@@ -111,8 +113,8 @@ class smsPlotABS(object):
         textCMS1.Draw()
         self.c.textCMS = textCMS
         self.c.textCMS1 = textCMS1
-        # MODEL LABEL
-        textModelLabel= rt.TLatex(0.185,0.90,"%s" %self.model.label)
+        # MODEL LABEL        
+        textModelLabel= rt.TLatex(0.185,0.90+samsyoffset,"%s" %self.model.label)
         #textModelLabel= rt.TLatex(0.16,0.90,"%s" %self.model.label)
         #textModelLabel= rt.TLatex(0.16,0.915,"%s" %self.model.label)
         textModelLabel.SetNDC()
@@ -123,7 +125,8 @@ class smsPlotABS(object):
         self.c.textModelLabel = textModelLabel
         
         #textModelLabel2 = rt.TLatex(0.56,0.88,"NLO+NLL exclusion")
-        textModelLabel2 = rt.TLatex(0.52,0.725,"NLO+NLL exclusion")
+        #textModelLabel2 = rt.TLatex(0.52,0.725,"NLO+NLL exclusion")
+        textModelLabel2 = rt.TLatex(0.51,0.885+samsyoffset,"NLO+NLL exclusion")##this is drawn
         textModelLabel2.SetNDC()
         textModelLabel2.SetTextAlign(13)
         textModelLabel2.SetTextFont(42)
@@ -131,7 +134,7 @@ class smsPlotABS(object):
         textModelLabel2.Draw()
         self.c.textModelLabel2 = textModelLabel2
         # MASS LABEL
-        textMassLabel= rt.TLatex(0.57,0.82,"%s"%self.model.masslabel)
+        textMassLabel= rt.TLatex(0.575,0.82+samsyoffset+.01,"%s"%self.model.masslabel)
         textMassLabel.SetNDC()
         textMassLabel.SetTextAlign(13)
         textMassLabel.SetTextFont(42)
@@ -139,12 +142,12 @@ class smsPlotABS(object):
         textMassLabel.Draw()
         self.c.textNLONLL = textMassLabel
         # BOXES LABEL
-        textBoxesLabel= rt.TLatex(0.18,0.73,"%s" %self.boxes.replace("_"," "))
+        textBoxesLabel= rt.TLatex(0.18,0.73+samsyoffset,"%s" %self.boxes.replace("_"," "))
         textBoxesLabel.SetNDC()
         textBoxesLabel.SetTextAlign(13)
         textBoxesLabel.SetTextFont(52)
         textBoxesLabel.SetTextSize(0.036)
-        textBoxesLabel.Draw()
+        #textBoxesLabel.Draw()
         self.c.textBoxesLabel = textBoxesLabel
 
     def Save(self,label):
@@ -167,8 +170,8 @@ class smsPlotABS(object):
         LObs.SetLineStyle(1)
         LObs.SetLineWidth(4)
         LObs.SetMarkerStyle(20)
-        LObs.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.35*yRange/100*10)
-        LObs.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.35*yRange/100*10)
+        LObs.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.35*yRange/100*10+4000*samsyoffset)
+        LObs.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.35*yRange/100*10+4000*samsyoffset)
         
         LObsP = rt.TGraph(2)
         LObsP.SetName("LObsP")
@@ -180,8 +183,8 @@ class smsPlotABS(object):
         LObsP.SetLineStyle(1)
         LObsP.SetLineWidth(2)
         LObsP.SetMarkerStyle(20)
-        LObsP.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.20*yRange/100*10)
-        LObsP.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.20*yRange/100*10)
+        LObsP.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.20*yRange/100*10+4000*samsyoffset)
+        LObsP.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.20*yRange/100*10+4000*samsyoffset)
         
         LObsM = rt.TGraph(2)
         LObsM.SetName("LObsM")
@@ -193,10 +196,11 @@ class smsPlotABS(object):
         LObsM.SetLineStyle(1)
         LObsM.SetLineWidth(2)
         LObsM.SetMarkerStyle(20)
-        LObsM.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.50*yRange/100*10)
-        LObsM.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.50*yRange/100*10)
+        LObsM.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.50*yRange/100*10+4000*samsyoffset)
+        LObsM.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.50*yRange/100*10+4000*samsyoffset)
         
-        textObs = rt.TLatex(self.model.Xmin+11*xRange/100, self.model.Ymax-1.50*yRange/100*10, "Observed #pm 1 #sigma_{theory}")
+        
+        textObs = rt.TLatex(self.model.Xmin+11*xRange/100, self.model.Ymax-1.50*yRange/100*10+4000*samsyoffset, "Observed #pm 1 #sigma_{theory}")
         textObs.SetTextFont(42)
         textObs.SetTextSize(0.040)
         textObs.Draw()
@@ -208,8 +212,8 @@ class smsPlotABS(object):
         LExpP.SetLineColor(color(self.EXP['colorLine']))
         LExpP.SetLineStyle(7)
         LExpP.SetLineWidth(2)  
-        LExpP.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.85*yRange/100*10)
-        LExpP.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.85*yRange/100*10)
+        LExpP.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.85*yRange/100*10+4000*samsyoffset)
+        LExpP.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.85*yRange/100*10+4000*samsyoffset)
         
         LExp = rt.TGraph(2)
         LExp.SetName("LExp")
@@ -217,8 +221,8 @@ class smsPlotABS(object):
         LExp.SetLineColor(color(self.EXP['colorLine']))
         LExp.SetLineStyle(7)
         LExp.SetLineWidth(4)
-        LExp.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-2.00*yRange/100*10)
-        LExp.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-2.00*yRange/100*10)
+        LExp.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-2.00*yRange/100*10+4000*samsyoffset)
+        LExp.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-2.00*yRange/100*10+4000*samsyoffset)
         
         LExpM = rt.TGraph(2)
         LExpM.SetName("LExpM")
@@ -226,8 +230,8 @@ class smsPlotABS(object):
         LExpM.SetLineColor(color(self.EXP['colorLine']))
         LExpM.SetLineStyle(7)
         LExpM.SetLineWidth(2)  
-        LExpM.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-2.15*yRange/100*10)
-        LExpM.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-2.15*yRange/100*10)
+        LExpM.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-2.15*yRange/100*10+4000*samsyoffset)
+        LExpM.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-2.15*yRange/100*10+4000*samsyoffset)
 
         LExpP2 = rt.TGraph(2)
         LExpP2.SetName("LExpP2")
@@ -235,8 +239,8 @@ class smsPlotABS(object):
         LExpP2.SetLineColor(color(self.EXP2['colorLine']))
         LExpP2.SetLineStyle(7)
         LExpP2.SetLineWidth(2)  
-        LExpP2.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.75*yRange/100*10)
-        LExpP2.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.75*yRange/100*10)
+        LExpP2.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.75*yRange/100*10+4000*samsyoffset)
+        LExpP2.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.75*yRange/100*10+4000*samsyoffset)
 
         LExpM2 = rt.TGraph(2)
         LExpM2.SetName("LExpM")
@@ -244,11 +248,11 @@ class smsPlotABS(object):
         LExpM2.SetLineColor(color(self.EXP2['colorLine']))
         LExpM2.SetLineStyle(7)
         LExpM2.SetLineWidth(2)  
-        LExpM2.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-2.25*yRange/100*10)
-        LExpM2.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-2.25*yRange/100*10)
+        LExpM2.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-2.25*yRange/100*10+4000*samsyoffset)
+        LExpM2.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-2.25*yRange/100*10+4000*samsyoffset)
         
         #textExp = rt.TLatex(self.model.Xmin+11*xRange/100, self.model.Ymax-2.15*yRange/100*10, "Expected #pm 1, #pm 2 #sigma_{experiment}")
-        textExp = rt.TLatex(self.model.Xmin+11*xRange/100, self.model.Ymax-2.15*yRange/100*10, "Expected #pm 1 #sigma_{experiment}")
+        textExp = rt.TLatex(self.model.Xmin+11*xRange/100, self.model.Ymax-2.15*yRange/100*10+4000*samsyoffset, "Expected #pm 1 #sigma_{experiment}")
         textExp.SetTextFont(42)
         textExp.SetTextSize(0.040)
         textExp.Draw()
