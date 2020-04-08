@@ -25,9 +25,9 @@ DISP_OFFSET = 12.5 # Extra offset needed for display purposes
 
 BOOST_BOXES = ['WAna_nj35','WAna_nj6','TopAna']
 
-def getxsec():
+def getxsec(parent='glu'):
     xsecdict = {} # dict for xsecs
-    xsecFile = "glu_xsecs_13TeV.txt"
+    xsecFile = parent+"_xsecs_13TeV.txt"#"glu_xsecs_13TeV.txt"
 #    xsecFile = "stopsbot_xsecs_13TeV.txt"
 
     with open(xsecFile,"r") as xfile:
@@ -43,7 +43,7 @@ def getxsec():
 class SMS(object):
 
     def __init__(self, mgMin, mgMax, mchiMin, mchiMax,
-            binWidth=25, nRebins=0, xsecMin=1.e-5, xsecMax=10., 
+            binWidth=40, nRebins=0, xsecMin=1.e-5, xsecMax=10., 
             diagonalOffset=25, smoothing=50, fixLSP0=False,
             boxes=BOOST_BOXES, isGluino=True, submodels=None):
         """
@@ -435,7 +435,7 @@ if __name__ == '__main__':
     #    mchi = float(result.replace(".log","").split("_")[-2:][1])
     #    gchipairs.append((mg,mchi))
     #    haddOutputs.append("%s/%s_xsecUL_mg_%s_mchi_%s_%s.root" %(directory, model, mg, mchi, box))
-    infiles = directory+model+"/"+model+"_xsecUL_mg_*_mchi_*.?_"+box+".root"
+    infiles = directory+model+"/"+model+"_xsecUL_*_*_*_*_"+box+".root"
     print 'infiles', infiles
     if options.signif: infiles = directory+"/"+model+"_signif_mg_*_mchi_*.?_"+box+".root"
     for result in glob.glob(infiles):
@@ -516,7 +516,8 @@ if __name__ == '__main__':
 #            print "ERROR: no xsec file; exiting"
 #            sys.exit()  
 
-        xsecdict = getxsec()
+        if 'T1' in model: xsecdict = getxsec('glu')
+        if 'T2' in model: xsecdict = getxsec('stopsbot')          
         #print xsecdict
 
         for i in xrange(1,xsecGluino.GetNbinsX()+1):
@@ -528,8 +529,8 @@ if __name__ == '__main__':
                     #print 'thyXsec', thyXsec[int(xLow),int(yLow)]
                     #xsecVal = thyXsec[int(xLow),int(yLow)]
                     #xsecErr =  thyXsecErr[int(xLow),int(yLow)]
-                    xsecVal = xsecdict[int(xLow)][0]
-                    xsecErr = xsecdict[int(xLow)][1]
+                    xsecVal = xsecdict[int(5 * round(float(xLow)/5))][0]
+                    xsecErr = xsecdict[int(int(5 * round(float(xLow)/5)))][1]
                     xsecGluino.SetBinContent(i,j,xsecVal)
                     xsecGluinoPlus.SetBinContent(i,j,xsecVal*(1+xsecErr))
                     xsecGluinoMinus.SetBinContent(i,j,xsecVal*(1-xsecErr))

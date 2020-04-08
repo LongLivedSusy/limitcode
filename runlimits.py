@@ -7,8 +7,8 @@ from string import *
 def getxsec():
     xsecdict = {} # dict for xsecs
     #xsecFile = "2Dlimitplot/usefulthings/glu_xsecs_13TeV.txt"
-    xsecFile = "glu_xsecs_13TeV.txt"
-    #xsecFile = "stopsbot_xsecs_13TeV.txt"
+    #xsecFile = "glu_xsecs_13TeV.txt"
+    xsecFile = "stopsbot_xsecs_13TeV.txt"
 
     with open(xsecFile,"r") as xfile:
         lines = xfile.readlines()
@@ -100,8 +100,8 @@ def writeTree(box, model, directory, mg, mchi, xsecULObs, xsecULExpPlus2, xsecUL
 # Gt the cross sections
 xsecdict = getxsec()
 box = 'DT'
-model = 'T1qqqqLL'
-#model = 'T2btLL'
+#model = 'T1qqqqLL'
+model = 'T2btLL'
 dcdir = 'datacards/'+model+'/'
 limitdir = 'limitsroot/'+model+'/'
 limit2dir = 'limits2root/'+model+'/'
@@ -131,12 +131,16 @@ for dc in dcs:
     os.system(cmd)
     limitfln = limitdir+'higgsCombine'+fln+'.AsymptoticLimits.mH120.root'
     #os.system('mv *'+fln+'*.root '+limitfln)
-    mparent = int(limitfln[limitfln.find('Glu')+3:limitfln.find('_Chi')])
-    #mparent = int(limitfln[limitfln.find('Stop')+4:limitfln.find('_Chi')])
-    mLSP = int(limitfln[limitfln.find('Chi1ne')+6:limitfln.find('.As')])   
+    if 'T1' in model: mparent = int(limitfln[limitfln.find('Glu')+3:limitfln.find('_Chi')])
+    if 'T2' in model: mparent = int(limitfln[limitfln.find('Stop')+4:limitfln.find('_Chi')])
+    print 'dissecting', limitfln
+    mLSP = int(limitfln[limitfln.find('Chi1')+6:limitfln.find('.As')])   
     print 'mparent, mchi', mparent, mLSP
     log = open(logfile).readlines()
-    refXsec = xsecdict[mparent][0]
+    print 'going to reference xsec with mparent'
+    try: refXsec = xsecdict[int(5*round(float(mparent)/5))][0]
+    except:
+        print 'couldnt find', int(5*round(float(mparent)/5)), 'in', xsecdict
     print mparent, refXsec
     for line in log:
         if "Observed Limit:" in line:
