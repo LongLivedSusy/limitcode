@@ -43,8 +43,8 @@ class smsPlotABS(object):
         rt.gStyle.SetOptTitle(0)        
 
         self.c.SetLogz()
-        self.c.SetTickx(1)
-        self.c.SetTicky(1)
+        #self.c.SetTickx(1)
+        #self.c.SetTicky(1)
 
         self.c.SetRightMargin(0.19)
         self.c.SetTopMargin(0.08)

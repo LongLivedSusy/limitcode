@@ -694,8 +694,8 @@ class sms():
         self.diagX = array('d',[0,20000,self.Xmin])
         self.diagY = array('d',[-25, 20000-25,self.Xmax])
         #self.divX = 407
-        self.divX = 409
-        self.divY = 408
+        self.divX = 509#409
+        self.divY = 508#408
         self.optX = True
         self.optY = True
 
