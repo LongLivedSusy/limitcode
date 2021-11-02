@@ -18,5 +18,9 @@ unknown issues.
 4. SMSPlottingCode: The limit plotting code inherited from Razor (which in turn was 
 inherited from elsewhere).
 In that directory, run, e.g.:
+
 python scripts/makeSMSplots.py config/DT/T1qqqqLL_DT_exp.cfg T1qqqqLL
 
+BUT, more recently I made a script that automates running over several processes and saving the plots into a directory with the date of the run: (data is only used for bookkeeping here, e.g. comparing limits plots obtained from different runs on different dates)
+
+python runplots.py <date>

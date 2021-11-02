@@ -4,11 +4,12 @@ import os,sys
 from ROOT import *
 from string import *
 
-def getxsec():
+def getxsec(model):
     xsecdict = {} # dict for xsecs
-    #xsecFile = "2Dlimitplot/usefulthings/glu_xsecs_13TeV.txt"
-    #xsecFile = "glu_xsecs_13TeV.txt"
-    xsecFile = "stopsbot_xsecs_13TeV.txt"
+    if 'T1qqqq' in model:
+        xsecFile = "glu_xsecs_13TeV.txt"
+    if 'T2bt' in model:
+        xsecFile = "stopsbot_xsecs_13TeV.txt"
 
     with open(xsecFile,"r") as xfile:
         lines = xfile.readlines()
@@ -98,49 +99,61 @@ def writeTree(box, model, directory, mg, mchi, xsecULObs, xsecULExpPlus2, xsecUL
 #--------------
 
 # Gt the cross sections
-xsecdict = getxsec()
 box = 'DT'
-#model = 'T1qqqqLL'
-model = 'T2btLL'
-dcdir = 'datacards/'+model+'/'
-limitdir = 'limitsroot/'+model+'/'
-limit2dir = 'limits2root/'+model+'/'
-logdir = 'logfiles/'+model+'/'
+model = 'T1qqqqLL'
+#model = 'T2btLL'
+dirext = ''
+#dirext = '_nolep'
+date = '210520/'
+dcdir = 'datacards/'+date+model+dirext+'/'
+limitdir = 'limitsroot/'+date+model+dirext+'/'
+limit2dir = 'limits2root/'+date+model+dirext+'/'
+logdir = 'logfiles/'+date+model+dirext+'/'
 if not os.path.exists(limitdir):
-    os.system('mkdir '+limitdir)
+    os.system('mkdir -p '+limitdir)
+if not os.path.exists(limit2dir):
+    os.system('mkdir -p '+limit2dir)
+if not os.path.exists(logdir):
+    os.system('mkdir -p '+logdir)
 
 dcs = os.popen('ls '+dcdir+'*.txt').readlines()
 
+# read the cross sections:
+xsecdict = getxsec(model)
+
 # write results to a tree
-xsecULObs	= 0.
-xsecULExpMinus2 = 0.
-xsecULExpMinus  = 0.
-xsecULExp	= 0.
-xsecULExpPlus   = 0.
-xsecULExpPlus2  = 0.
-signif          = 0.
 
 for dc in dcs:
     dc = strip(dc)
-    fln = replace(split(split(dc, '/')[2], '.')[0], "datacard", "") 
+    fln = replace(split(split(dc, '/')[3], '.')[0], "datacard", "") 
+
+    xsecULObs	= 0.
+    xsecULExpMinus2 = 0.
+    xsecULExpMinus  = 0.
+    xsecULExp	= 0.
+    xsecULExpPlus   = 0.
+    xsecULExpPlus2  = 0.
+    signif          = 0.
 
     logfile = logdir+fln+'.log'
+    #if os.path.exists(logfile):
+    #    continue
     print 'Running:', fln
     cmd = 'combine -M AsymptoticLimits '+dc+' --name '+fln+' >& '+logfile
     print cmd
     os.system(cmd)
     limitfln = limitdir+'higgsCombine'+fln+'.AsymptoticLimits.mH120.root'
-    #os.system('mv *'+fln+'*.root '+limitfln)
-    if 'T1' in model: mparent = int(limitfln[limitfln.find('Glu')+3:limitfln.find('_Chi')])
-    if 'T2' in model: mparent = int(limitfln[limitfln.find('Stop')+4:limitfln.find('_Chi')])
-    print 'dissecting', limitfln
-    mLSP = int(limitfln[limitfln.find('Chi1')+6:limitfln.find('.As')])   
+    os.system('mv *'+fln+'*.root '+limitfln)
+    mparent = ''
+    if 'T1qqqq' in model:
+        mparent = int(limitfln[limitfln.find('Glu')+3:limitfln.find('_Chi')])
+    if 'T2bt' in model:
+        mparent = int(limitfln[limitfln.find('Stop')+4:limitfln.find('_Chi')])
+    mLSP = int(limitfln[limitfln.find('Chi1ne')+6:limitfln.find('.As')])   
     print 'mparent, mchi', mparent, mLSP
     log = open(logfile).readlines()
-    print 'going to reference xsec with mparent'
-    try: refXsec = xsecdict[int(5*round(float(mparent)/5))][0]
-    except:
-        print 'couldnt find', int(5*round(float(mparent)/5)), 'in', xsecdict
+    mparent = int(5*round(mparent/5))
+    refXsec = xsecdict[mparent][0]
     print mparent, refXsec
     for line in log:
         if "Observed Limit:" in line:
@@ -158,6 +171,7 @@ for dc in dcs:
         elif "Significance:" in line:
             signif = float(line.split()[1])
 
+    print "Exp limit:", xsecULExp
     writeTree(box, model, limit2dir, float(mparent), float(mLSP), [xsecULObs], [xsecULExpPlus2], [xsecULExpPlus], [xsecULExp], [xsecULExpMinus], [xsecULExpMinus2], 0)
 
 
