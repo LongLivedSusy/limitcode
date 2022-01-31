@@ -99,9 +99,10 @@ class sms():
         elif modelname.find("T1bri") != -1: self.T1bri()
         #elif modelname.find("T1qqqq") != -1: self.T1qqqq()
         elif modelname.find("T1qqqqLL") != -1: self.T1qqqqLL()
+        elif modelname.find("T1btbtLL") != -1: self.T1btbtLL()
         elif modelname.find("T2bb") != -1: self.T2bb()
         elif modelname.find("T2qq") != -1: self.T2qq()
-        elif modelname.find("T6bbHH") != -1: self.T6bbHH()            
+        elif modelname.find("T6bbHH") != -1: self.T6bbHH()
         elif modelname.find("T2ttGluino") != -1: self.T2ttGluino()
         elif modelname.find("T2tt") != -1: self.T2tt()
         elif modelname.find("T2btLL") != -1: self.T2btLL()
@@ -195,11 +196,12 @@ class sms():
         self.masslabel = ""
         # scan range to plot
         self.Xmin = 600
-        self.Xmax = 2300
+        self.Xmax = 2800
         self.Ymin = 0
-        self.Ymax = 2125
+        #self.Ymax = 2125
+        self.Ymax = 1900
         self.Zmax = 2
-        self.Zmin = 1.e-5
+        self.Zmin = 1.e-4
         # produce sparticle
         self.sParticle = "m_{#tilde{g}} (GeV)"
         # LSP
@@ -529,6 +531,32 @@ class sms():
         self.modelname = "T1qqqqLL"
         # decay chain
         self.label= "pp #rightarrow #tilde{g}#tilde{g}, #tilde{g} #rightarrow q#bar{q}#tilde{#chi}^{#pm}_{1}"
+        self.masslabel = "c#tau(#tilde{#chi}^{#pm}) = 200 cm"
+        # plot boundary. The top 1/4 of the y axis is taken by the legend
+        self.Xmin = 1000
+        self.Xmax = 2800
+        self.Ymin = 1
+        #self.Ymax = 3300
+        self.Ymax = 2775
+        self.Zmax = 10.
+        self.Zmin = 1.e-5
+        # produce sparticle
+        self.sParticle = "m_{#tilde{g}} (GeV)"
+        # LSP
+        self.LSP = "m_{#tilde{#chi}^{0}_{1}} (GeV)"
+        # diagonal position: mLSP = mgluino - 2mtop
+        self.diagX = array('d',[0,20000,self.Xmin])
+        self.diagY = array('d',[-25, 20000-25,self.Xmax])
+        self.divX = 408
+        self.divY = 408
+        self.optX = True
+        self.optY = True
+
+    def T1btbtLL(self):
+        # model name
+        self.modelname = "T1btbtLL"
+        # decay chain
+        self.label= "pp #rightarrow #tilde{g}#tilde{g}, #tilde{g} #rightarrow b#bar{t}#tilde{#chi}^{#pm}_{1}"
         self.masslabel = "c#tau(#tilde{#chi}^{#pm}) = 200 cm"
         # plot boundary. The top 1/4 of the y axis is taken by the legend
         self.Xmin = 1000

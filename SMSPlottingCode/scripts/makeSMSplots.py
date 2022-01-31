@@ -12,15 +12,20 @@ if __name__ == '__main__':
     modelname = sys.argv[1].split("/")[-1].split("_")[0]
     analysisLabel = sys.argv[1].split("/")[-1].split("_")[1]
     outputname = sys.argv[2]
+    print "outputname", outputname
     date = sys.argv[3]
-    bins = ""
+    ctau = ""
     if len(sys.argv) > 4:
-        bins = sys.argv[4]
+        ctau = sys.argv[4]
+        outputname = outputname + '_' + ctau
+    bins = ""
+    if len(sys.argv) > 5:
+        bins = sys.argv[5]
 
     # read the config file
     fileIN = inputFile(filename)
     fileIN.HISTOGRAM['histogram'].Print('v')
-    
+
     # classic temperature histogram
     xsecPlot = smsPlotXSEC(modelname, fileIN.HISTOGRAM, fileIN.OBSERVED, fileIN.EXPECTED, fileIN.EXPECTED2, fileIN.ENERGY, fileIN.LUMI, fileIN.PRELIMINARY, fileIN.BOXES, "")
     xsecPlot.Draw()
