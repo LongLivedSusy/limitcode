@@ -84,7 +84,6 @@ sms_models = {
             diagonalOffset=225),
         'T1qqqq':SMS(600, 2300, 0, 1650),
         'T1qqqqLL':SMS(1000, 2800, 1, 2700),
-        'T1btbtLL':SMS(1000, 2800, 1, 2700),
         'T2bb':SMS(100, 1500, 0, 800,
             isGluino=False),
         'T2bt':SMS(100, 1500, 0, 800, isGluino=False),
@@ -351,13 +350,11 @@ def set_palette(name="default", ncontours=255):
 if __name__ == '__main__':
 
     rt.gROOT.SetBatch()
-    #modelname = "T1btbtLL"
     modelname = "T1qqqqLL"
     #modelname = "T2btLL"
     dirext = ""
     #dirext = "_nolep"
     date = "210520"
-    #date = "220124"
     parser = OptionParser()
     parser.add_option('-b','--box',dest="box", default="DT",type="string",
                   help="box name")
@@ -557,7 +554,6 @@ if __name__ == '__main__':
 
     xyPairExp = {}
     for clsType in clsTypes:
-        print "model, clstype: ", model, clsType
 
         xsecUL[clsType] = rt.TH2D("xsecUL_%s_%s"%(model,clsType),"xsecUL_%s_%s"%(model,clsType),int((mgMax-mgMin)/binWidth),mgMin, mgMax,int((mchiMax-mchiMin)/binWidth), mchiMin, mchiMax)
         xsecTree.Project("xsecUL_%s_%s"%(model,clsType),"mchi:mg",whichCLsVar[clsType])

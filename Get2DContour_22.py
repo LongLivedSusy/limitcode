@@ -89,6 +89,7 @@ sms_models = {
             isGluino=False),
         'T2bt':SMS(100, 1500, 0, 800, isGluino=False),
         'T2btLL':SMS(400, 2500, 1, 2000, isGluino=False),
+        'T2tbLL':SMS(400, 2500, 1, 2000, isGluino=False),
         'T2tt':SMS(100, 1500, 0, 800, isGluino=False,
             diagonalOffset=75, submodels=[
                 'T2tt_dM-10to80_genHT-160_genMET-80',
@@ -350,14 +351,20 @@ def set_palette(name="default", ncontours=255):
 
 if __name__ == '__main__':
 
+    if len(sys.argv) < 4:
+        print 'Run as: model date ctau'
+        sys.exit(0)
+
     rt.gROOT.SetBatch()
-    #modelname = "T1btbtLL"
-    modelname = "T1qqqqLL"
+    #modelname = "T2tbLL"
+    modelname = sys.argv[1]
+    #modelname = "T1qqqqLL"
     #modelname = "T2btLL"
     dirext = ""
     #dirext = "_nolep"
-    date = "210520"
-    #date = "220124"
+    #date = "210520"
+    ctau = sys.argv[2]
+    date = sys.argv[3]
     parser = OptionParser()
     parser.add_option('-b','--box',dest="box", default="DT",type="string",
                   help="box name")
@@ -445,21 +452,32 @@ if __name__ == '__main__':
     #    haddOutputs.append("%s/%s_xsecUL_mg_%s_mchi_%s_%s.root" %(directory, model, mg, mchi, box))
     # input files
     print "directory", directory
-    infiles = directory+model+"_xsecUL_mg_*_mchi_*.?_"+box+".root"
+    if ctau != '':
+        infiles = directory+model+"_xsecUL_mg_*_mchi_*_ctau_"+ctau+"_"+box+".root"
+    else:
+        infiles = directory+model+"_xsecUL_mg_*_mchi_*.?_"+box+".root"
     print 'infiles', infiles
     if options.signif: infiles = directory+"/"+model+"_signif_mg_*_mchi_*.?_"+box+".root"
     for result in glob.glob(infiles):
         haddOutputs.append(result)
-        mg   = float(result.replace("_"+box+".root","").split("_")[-3])
-        mchi = float(result.replace("_"+box+".root","").split("_")[-1])
+        if ctau != '':
+            mg   = float(result.replace("_ctau_"+ctau+"_"+box+".root","").split("_")[-3])
+            mchi = float(result.replace("_ctau_"+ctau+"_"+box+".root","").split("_")[-1])
+        else:
+            mg   = float(result.replace("_"+box+".root","").split("_")[-3])
+            mchi = float(result.replace("_"+box+".root","").split("_")[-1])
+    
         gchipairs.append((mg,mchi))
-
     if options.signif:
         print directory+"/"+model+"_signif_*_"+box+".root"
         haddout = "%s/%s_signif_%s.root %s"%(directory+"/results",model,box," ".join(haddOutputs))
     else:
         print directory+"/"+model+"_xsecUL_*_"+box+".root"
         haddout = "%s/%s_xsecUL_Asymptotic_%s.root %s"%(directory+"/results",model,box," ".join(haddOutputs))
+        if ctau != "":
+            print directory+"/"+model+"_"+ctau+"_xsecUL_*_"+box+".root"
+            haddout = "%s/%s_%s_xsecUL_Asymptotic_%s.root %s"%(directory+"/results",model,ctau,box," ".join(haddOutputs))
+    print haddout
     if not os.path.exists(directory+"/results"): subprocess.call(["mkdir", "-p", directory+"/results"])
     os.system("hadd -f "+haddout)
     #os.system("rm %s"%(" ".join(haddOutputs)))
@@ -470,7 +488,10 @@ if __name__ == '__main__':
         xsecTree = xsecFile.Get("signifTree")
     else:
         print 'xsec file:', "%s/%s_xsecUL_Asymptotic_%s.root"%(directory+"/results",model,box)
-        xsecFile = rt.TFile.Open("%s/%s_xsecUL_Asymptotic_%s.root"%(directory+"/results",model,box))
+        if ctau != "":
+            xsecFile = rt.TFile.Open("%s/%s_%s_xsecUL_Asymptotic_%s.root"%(directory+"/results",model,ctau,box))
+        else:
+            xsecFile = rt.TFile.Open("%s/%s_xsecUL_Asymptotic_%s.root"%(directory+"/results",model,box))
         xsecTree = xsecFile.Get("xsecTree")
         xsecGluino =  rt.TH2D("xsecGluino","xsecGluino",int((mgMax-mgMin)/binWidth),mgMin, mgMax,int((mchiMax-mchiMin)/binWidth), mchiMin, mchiMax)
         xsecGluinoPlus =  rt.TH2D("xsecGluinoPlus","xsecGluinoPlus",int((mgMax-mgMin)/binWidth),mgMin, mgMax,int((mchiMax-mchiMin)/binWidth), mchiMin, mchiMax)
@@ -706,20 +727,28 @@ if __name__ == '__main__':
         contourFinal[clsType].SetName("%s_%s_%s"%(clsType,model,box))
 
         if not options.signif: c.SetLogz(1)
-        c.Print("%s/%s_INTERP_%s_%s.png"%(directory+"/results",model,box,clsType))
+        if ctau != "":
+            c.Print("%s/%s_%s_INTERP_%s_%s.png"%(directory+"/results",model,ctau,box,clsType))
+        else:
+            c.Print("%s/%s_INTERP_%s_%s.png"%(directory+"/results",model,box,clsType))
 
     if options.signif:
         outFile = rt.TFile.Open("%s/%s_%s_signif.root"%(directory+"/results",model,box),"recreate")
     else:
-        outFile = rt.TFile.Open("%s/%s_%s_results.root"%(directory+"/results",model,box),"recreate")
+        if ctau != "":
+            outFile = rt.TFile.Open("%s/%s_%s_%s_results.root"%(directory+"/results",model,ctau,box),"recreate")
+        else:
+            outFile = rt.TFile.Open("%s/%s_%s_results.root"%(directory+"/results",model,box),"recreate")
     for clsType in clsTypes:
         contourFinal[clsType].Write()
         print 'writing ', xsecUL[clsType].GetName(), xsecUL[clsType].GetMinimum(), xsecUL[clsType].GetMaximum()
         xsecUL[clsType].Write()
 
     if not options.signif:
-        smoothOutFile = rt.TFile.Open("%s/%s_smoothXsecUL_%s.root"%(directory+"/results",model,box), "recreate")
-
+        if ctau != "":
+            smoothOutFile = rt.TFile.Open("%s/%s_%s_smoothXsecUL_%s.root"%(directory+"/results",model,ctau,box), "recreate")
+        else:
+            smoothOutFile = rt.TFile.Open("%s/%s_smoothXsecUL_%s.root"%(directory+"/results",model,box), "recreate")
         smoothXsecTree = rt.TTree("smoothXsecTree", "smoothXsecTree")
         myStructCmd = "struct MyStruct2{Double_t mg;Double_t mchi;Double_t x;Double_t y;"
         ixsecUL = 0
