@@ -6,10 +6,12 @@ from string import *
 
 def getxsec(model):
     xsecdict = {} # dict for xsecs
-    if 'T1qqqq' in model:
+    if 'T1qqqq' in model or 'T1btbt' in model:
         xsecFile = "glu_xsecs_13TeV.txt"
-    if 'T2bt' in model:
+    if 'T2bt' in model or 'T2tb' in model:
         xsecFile = "stopsbot_xsecs_13TeV.txt"
+    if model == 'PureHiggsino':
+        xsecFile = ".txt"
 
     with open(xsecFile,"r") as xfile:
         lines = xfile.readlines()
@@ -25,6 +27,8 @@ def getxsec(model):
 def writeTree(box, model, directory, mg, mchi, xsecULObs, xsecULExpPlus2, xsecULExpPlus, xsecULExp, xsecULExpMinus, xsecULExpMinus2, signif):
     #tmpFileName = "%s/%s_xsecUL_mg_%s_mchi_%s_%s.root" %("/tmp", model, mg, mchi, box)
     outputFileName = "%s/%s_xsecUL_mg_%s_mchi_%s_%s.root" %(directory, model, mg, mchi, box)
+    if ctau != '':
+        outputFileName = "%s/%s_xsecUL_mg_%s_mchi_%s_ctau_%s_%s.root" %(directory, model, mg, mchi, ctau,  box)
     fileOut = TFile.Open(outputFileName, "recreate")
 
     if 1==1:
@@ -100,11 +104,16 @@ def writeTree(box, model, directory, mg, mchi, xsecULObs, xsecULExpPlus2, xsecUL
 
 # Gt the cross sections
 box = 'DT'
-model = 'T1qqqqLL'
+#model = 'T1qqqqLL'
 #model = 'T2btLL'
+model = 'T1btbtLL'
+#model = 'T2tbLL'
+#model = 'PureHiggsino'
 dirext = ''
 #dirext = '_nolep'
-date = '210520/'
+#date = '210520/'
+#date = '220124/'
+date = '220629/'
 dcdir = 'datacards/'+date+model+dirext+'/'
 limitdir = 'limitsroot/'+date+model+dirext+'/'
 limit2dir = 'limits2root/'+date+model+dirext+'/'
@@ -125,6 +134,7 @@ xsecdict = getxsec(model)
 
 for dc in dcs:
     dc = strip(dc)
+    if "_Glu" in dc: continue
     fln = replace(split(split(dc, '/')[3], '.')[0], "datacard", "") 
 
     xsecULObs	= 0.
@@ -138,19 +148,35 @@ for dc in dcs:
     logfile = logdir+fln+'.log'
     #if os.path.exists(logfile):
     #    continue
+    limitfln = limitdir+'higgsCombine'+fln+'.AsymptoticLimits.mH120.root'
     print 'Running:', fln
+    if os.path.exists(limitfln): continue
     cmd = 'combine -M AsymptoticLimits '+dc+' --name '+fln+' >& '+logfile
     print cmd
     os.system(cmd)
-    limitfln = limitdir+'higgsCombine'+fln+'.AsymptoticLimits.mH120.root'
     os.system('mv *'+fln+'*.root '+limitfln)
     mparent = ''
+    ctau = ''
     if 'T1qqqq' in model:
         mparent = int(limitfln[limitfln.find('Glu')+3:limitfln.find('_Chi')])
+        mLSP = int(limitfln[limitfln.find('Chi1ne')+6:limitfln.find('.As')])   
     if 'T2bt' in model:
         mparent = int(limitfln[limitfln.find('Stop')+4:limitfln.find('_Chi')])
-    mLSP = int(limitfln[limitfln.find('Chi1ne')+6:limitfln.find('.As')])   
-    print 'mparent, mchi', mparent, mLSP
+        #mLSP = int(limitfln[limitfln.find('Chi1ne')+6:limitfln.find('.As')])   
+        mLSP = int(limitfln[limitfln.find('Chi1ne')+6:limitfln.find('_ctau')])   
+        ctau = int(limitfln[limitfln.find('_ctau')+5:limitfln.find('.As')])   
+    if 'T1btbt' in model:
+        mparent = int(limitfln[limitfln.find('Glu')+3:limitfln.find('_Chi')])
+        mLSP = int(limitfln[limitfln.find('Chi1ne')+6:limitfln.find('_ctau')])   
+        ctau = int(limitfln[limitfln.find('_ctau')+5:limitfln.find('.As')])   
+    if 'T2tb' in model:
+        mparent = int(limitfln[limitfln.find('Sbottom')+7:limitfln.find('_Chi')])
+        mLSP = int(limitfln[limitfln.find('Chi1ne')+6:limitfln.find('_ctau')])   
+        ctau = int(limitfln[limitfln.find('_ctau')+5:limitfln.find('.As')])   
+    if 'PureHiggsino' in model:
+        mparent = int(limitfln[limitfln.find('Sbottom')+7:limitfln.find('_Chi')])
+        mLSP = int(limitfln[limitfln.find('Chi1ne')+6:limitfln.find('_ctau')])
+    print 'mparent, mchi', mparent, mLSP, ctau
     log = open(logfile).readlines()
     mparent = int(5*round(mparent/5))
     refXsec = xsecdict[mparent][0]
