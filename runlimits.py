@@ -113,11 +113,12 @@ dirext = ''
 #dirext = '_nolep'
 #date = '210520/'
 #date = '220124/'
-date = '220629/'
-dcdir = 'datacards/'+date+model+dirext+'/'
-limitdir = 'limitsroot/'+date+model+dirext+'/'
-limit2dir = 'limits2root/'+date+model+dirext+'/'
-logdir = 'logfiles/'+date+model+dirext+'/'
+#date = '220629/'
+date = '220705'
+dcdir = 'datacards/'+date+'/'+model+dirext+'/'
+limitdir = 'limitsroot/'+date+'/'+model+dirext+'/'
+limit2dir = 'limits2root/'+date+'/'+model+dirext+'/'
+logdir = 'logfiles/'+date+'/'+model+dirext+'/'
 if not os.path.exists(limitdir):
     os.system('mkdir -p '+limitdir)
 if not os.path.exists(limit2dir):
