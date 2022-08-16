@@ -25,8 +25,8 @@ nobins = []
 #onlyleptons = range(1, 24+1) + range(49, 50+1)
 
 # after merging the 2DT bins:
-leptonbins = range(25, 48+1) + range(50, 51+1)
-hadronbins = range(1, 24+1) + range(49, 49+1)
+leptonbins = list(range(25, 48+1)) + list(range(50, 51+1))
+hadronbins = list(range(1, 24+1)) + list(range(49, 49+1))
 
 binstozero = nobins
 #binstozero = leptonbins
@@ -115,16 +115,16 @@ sighistsup = {}
 sighistsdn = {}
 
 for f in signalfiles:
-    f = strip(f)
+    f = f.strip()
     signalhistofile = f
     signalname = ((f.split('/'))[-1])[:-5]
     print (signalname)
     if "pm" in signalname:
         print ("******* 1:", signalname)
-        signalname = replace(signalname, "pm", "ne")
+        signalname = signalname.replace("pm", "ne")
         print ("******* 2:", signalname)
-    frn = replace(signalname, "AnalysisHists", "limitinput") + '.root'
-    fdn = replace(signalname, "AnalysisHists", "datacard") + '.txt'
+    frn = signalname.replace("AnalysisHists", "limitinput") + '.root'
+    fdn = signalname.replace("AnalysisHists", "datacard") + '.txt'
     fs = TFile(signalhistofile)
     if signalname == 'T1qqqqLL' and '1075' in signalhistofile: continue
     print ('*** Signal file:', signalhistofile)
@@ -211,7 +211,7 @@ for f in signalfiles:
     for sys in systs:
       #print 'sys', sys
       rowc = []
-      rowc.append('%-14s ' % strip(sys)+'%-6s ' % 'lnN')
+      rowc.append('%-14s ' % sys.strip() +'%-6s ' % 'lnN')
       hup, hdown = fs.Get('hBaselineSyst'+sys+'Up_BinNumberTruth'), fs.Get('hBaselineSyst'+sys+'Down_BinNumberTruth')
       for ibin in range(1,hobs.GetXaxis().GetNbins()+1):
         for p in procs:
@@ -227,7 +227,7 @@ for f in signalfiles:
       
       hup, hdown = fb.Get('h'+bgsys[0]+'BaselineMASTER_BinNumberMethod'+bgsys[1]+bgsys[2]+'Up'), fb.Get('h'+bgsys[0]+'BaselineMASTER_BinNumberMethod'+bgsys[1]+bgsys[2]+'Down')
       rowc = []
-      rowc.append('%-14s ' % strip(bgsys[0]+bgsys[2])+('%-6s ' % 'lnN'))
+      rowc.append('%-14s ' % (bgsys[0]+bgsys[2]).strip()+('%-6s ' % 'lnN'))
       for ibin in range(1,hobs.GetXaxis().GetNbins()+1):
         for p in procs:
             relevant = bgsys[0].split('Long')[0].split('Short')[0]==p
@@ -248,7 +248,7 @@ for f in signalfiles:
             else: continue #else: continue#linestem = '0'
             linestem = str(N)
             if float(linestem.split('.')[-1])==0: linestem = str(int(float(linestem)))
-            nuisname = 'gma'+strip(p)+str(ibin)
+            nuisname = 'gma'+p.strip()+str(ibin)
             rowc.append('%-21s ' % (nuisname+' gmN '+linestem))
             for ibin_ in range(1,hobs.GetXaxis().GetNbins()+1):
                 for p_ in procs:
