@@ -118,16 +118,16 @@ for f in signalfiles:
     f = strip(f)
     signalhistofile = f
     signalname = ((f.split('/'))[-1])[:-5]
-    print signalname
+    print (signalname)
     if "pm" in signalname:
-        print "******* 1:", signalname
+        print ("******* 1:", signalname)
         signalname = replace(signalname, "pm", "ne")
-        print "******* 2:", signalname
+        print ("******* 2:", signalname)
     frn = replace(signalname, "AnalysisHists", "limitinput") + '.root'
     fdn = replace(signalname, "AnalysisHists", "datacard") + '.txt'
     fs = TFile(signalhistofile)
     if signalname == 'T1qqqqLL' and '1075' in signalhistofile: continue
-    print '*** Signal file:', signalhistofile
+    print ('*** Signal file:', signalhistofile)
     # Get signal histograms
     #hsig = fs.Get('hLongBaselineSystNom_BinNumberTruth')
     #hsig.SetName('Signal')
