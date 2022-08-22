@@ -106,15 +106,15 @@ def writeTree(box, model, directory, mg, mchi, xsecULObs, xsecULExpPlus2, xsecUL
 box = 'DT'
 #model = 'T1qqqqLL'
 #model = 'T2btLL'
-model = 'T1btbtLL'
-#model = 'T2tbLL'
+#model = 'T1btbtLL'
+model = 'T2tbLL'
 #model = 'PureHiggsino'
 dirext = ''
 #dirext = '_nolep'
 #date = '210520/'
 #date = '220124/'
 #date = '220629/'
-date = '220705'
+date = '220818'
 dcdir = 'datacards/'+date+'/'+model+dirext+'/'
 limitdir = 'limitsroot/'+date+'/'+model+dirext+'/'
 limit2dir = 'limits2root/'+date+'/'+model+dirext+'/'
@@ -152,6 +152,7 @@ for dc in dcs:
     limitfln = limitdir+'higgsCombine'+fln+'.AsymptoticLimits.mH120.root'
     print 'Running:', fln
     if os.path.exists(limitfln): continue
+#    cmd = 'combine -M AsymptoticLimits '+dc+' --name '+fln+' >& '+logfile
     cmd = 'combine -M AsymptoticLimits '+dc+' --name '+fln+' >& '+logfile
     print cmd
     os.system(cmd)

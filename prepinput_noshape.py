@@ -37,7 +37,7 @@ if len(binstozero) > 0:
     dirext = '_nolep'
 
 #date = '210520'
-date = '220705'
+date = '220818'
 
 # Physics processes
 # !!! Maybe already match here the process names and histograms
@@ -67,6 +67,8 @@ hobs.SetName('data_obs')
 hobs.Add(hfk)
 hobs.Add(hmn)
 
+print(hsh.Integral() + hmn.Integral() + hfk.Integral(), hobs.Integral())
+
 # Zeroing out
 zero_out_certain_bins(hsh, binstozero)
 zero_out_certain_bins(hmn, binstozero)
@@ -78,8 +80,8 @@ zero_out_certain_bins(hobs, binstozero)
 #print 'Signal: '+signalname
 #signalname = 'T2btLL'
 #signalname = 'T1qqqqLL'
-signalname = 'T1btbtLL'
-#signalname = 'T2tbLL'
+#signalname = 'T1btbtLL'
+signalname = 'T2tbLL'
 #signalname = 'PureHiggsino'
 
 signaldir = maindir+'Signal/'+signalname+'/*.root'
@@ -220,6 +222,7 @@ for f in signalfiles:
                 if (hup.GetBinContent(ibin)>0 and hdown.GetBinContent(ibin)>0) and not abs(hup.GetBinContent(ibin)==hdown.GetBinContent(ibin)): rowc.append('%-14s' % (str(round(hup.GetBinContent(ibin)/hsig.GetBinContent(ibin),3))+'/'+str(round(hdown.GetBinContent(ibin)/hsig.GetBinContent(ibin),3))))
                 else: rowc.append('%-14s' % ('1.0'))
             else: rowc.append('%-14s' % ('-'))
+      row = ''.join(rowc)
       fd.write(row+'\n')
 
     for bgsys in [['FakeLong', '1', 'One'],['FakeLong', '1', 'Two'],['FakeShort', '1','One'],['FakeShort', '1', 'Two'], ['ShowerLong', '2', 'One'], ['ShowerShort', '2', 'One'], ['MuonLong', '3', 'One']]:
