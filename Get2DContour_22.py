@@ -352,7 +352,7 @@ def set_palette(name="default", ncontours=255):
 if __name__ == '__main__':
 
     if len(sys.argv) < 4:
-        print 'Run as: model date ctau'
+        print 'Run as: model ctau date'
         sys.exit(0)
 
     rt.gROOT.SetBatch()
@@ -548,7 +548,7 @@ if __name__ == '__main__':
 #            sys.exit()  
 
         xsecdict = getxsec(refXsecFile)
-        #print xsecdict
+        print 'xsecdict', xsecdict
 
         for i in xrange(1,xsecGluino.GetNbinsX()+1):
             xLow = xsecGluino.GetXaxis().GetBinCenter(i)
@@ -560,7 +560,7 @@ if __name__ == '__main__':
                     #xsecVal = thyXsec[int(xLow),int(yLow)]
                     #xsecErr =  thyXsecErr[int(xLow),int(yLow)]
                     xsecVal = xsecdict[int(xLow)][0]
-                    xsecErr = xsecdict[int(xLow)][1]
+                    xsecErr = 0.01*xsecdict[int(xLow)][1]
                     xsecGluino.SetBinContent(i,j,xsecVal)
                     xsecGluinoPlus.SetBinContent(i,j,xsecVal*(1+xsecErr))
                     xsecGluinoMinus.SetBinContent(i,j,xsecVal*(1-xsecErr))
