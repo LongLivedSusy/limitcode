@@ -38,6 +38,7 @@ if len(binstozero) > 0:
 
 #date = '210520'
 date = '220818'
+date = '220914'
 
 # Physics processes
 # !!! Maybe already match here the process names and histograms
@@ -204,12 +205,12 @@ for f in signalfiles:
     # Add random systematics
     cnt2 = '''-----------------------------------------
 '''
-    cnt2 += '''Lumi           lnN    '''+'''1.025         -             -             -             '''*hobs.GetXaxis().GetNbins()+'''
+    cnt2 += '''Lumi           lnN    '''+ '''1.025         -             -             -             '''*hobs.GetXaxis().GetNbins()+'''
 '''
-    cnt2 += '''jes            lnN    '''+'''0.98/1.03     -             -             -             '''*hobs.GetXaxis().GetNbins()+'''
+    cnt2 += '''jes            lnN    '''+ '''0.98/1.03     -             -             -             '''*hobs.GetXaxis().GetNbins()+'''
 '''
 #    Closure  shape  -         1.0       1.0       1.0
-    fd.write(cnt2)
+    fd.write(cnt2)    
     for sys in systs:
       #print 'sys', sys
       rowc = []
@@ -224,8 +225,9 @@ for f in signalfiles:
             else: rowc.append('%-14s' % ('-'))
       row = ''.join(rowc)
       fd.write(row+'\n')
-
-    for bgsys in [['FakeLong', '1', 'One'],['FakeLong', '1', 'Two'],['FakeShort', '1','One'],['FakeShort', '1', 'Two'], ['ShowerLong', '2', 'One'], ['ShowerShort', '2', 'One'], ['MuonLong', '3', 'One']]:
+    fd.write('''ShowerShortOne lnN    '''+'''-             -             -             -             -             -             -             -             -             2.0           -             -             -             2.0           -             -             '''*int(hobs.GetXaxis().GetNbins()/4)+'''-             '''*4+'''
+''')
+    for bgsys in [['FakeLong', '1', 'One'],['FakeLong', '1', 'Two'],['FakeShort', '1','One'],['FakeShort', '1', 'Two'], ['ShowerLong', '2', 'One'], ['MuonLong', '3', 'One']]:#, ['ShowerShort', '2', 'One']
       #print 'bgsys', bgsys
       
       hup, hdown = fb.Get('h'+bgsys[0]+'BaselineMASTER_BinNumberMethod'+bgsys[1]+bgsys[2]+'Up'), fb.Get('h'+bgsys[0]+'BaselineMASTER_BinNumberMethod'+bgsys[1]+bgsys[2]+'Down')
@@ -264,6 +266,7 @@ for f in signalfiles:
             #os.system('echo '+row+' >> '+fd.name)
             fd.write(row+'\n')
             del rowc
+    #fd.write('''ShowerShortOne lnN    '''+'''0.98/1.03     -             -             -             '''*hobs.GetXaxis().GetNbins()+''')
     fs.Close()       
     fd.close()
     if maketestcard: exit(0)
