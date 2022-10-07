@@ -39,6 +39,7 @@ if len(binstozero) > 0:
 #date = '210520'
 date = '220818'
 date = '220914'
+date = '220924'
 
 # Physics processes
 # !!! Maybe already match here the process names and histograms
@@ -53,7 +54,7 @@ procs = [
 #maindir = '/afs/desy.de/user/k/kutznerv/dust/public/disapptrk/interpretation/Histograms/Indium/v15/'
 maindir = '/afs/desy.de/user/k/kutznerv/dust/public/disapptrk/interpretation/Histograms/Indium/v16/'
 
-fb = TFile(maindir+'Background/predictionRun2.root')
+fb = TFile(maindir+'Background/predictionRun2_unblinded.root')
 fb.ls()
 
 # Get all bg histograms
@@ -64,7 +65,8 @@ hmn.SetName('Muon')
 hfk = fb.Get('hFakeBaselineMASTER_BinNumberMethod1')
 hfk.SetName('Fake')
 hobs = hsh.Clone()
-hobs.SetName('data_obs')
+#hobs.SetName('data_obs')
+hobs.SetName('h_data')
 hobs.Add(hfk)
 hobs.Add(hmn)
 
@@ -81,8 +83,8 @@ zero_out_certain_bins(hobs, binstozero)
 #print 'Signal: '+signalname
 #signalname = 'T2btLL'
 #signalname = 'T1qqqqLL'
-#signalname = 'T1btbtLL'
-signalname = 'T2tbLL'
+signalname = 'T1btbtLL'
+#signalname = 'T2tbLL'
 #signalname = 'PureHiggsino'
 
 signaldir = maindir+'Signal/'+signalname+'/*.root'
