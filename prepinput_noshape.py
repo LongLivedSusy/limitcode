@@ -6,6 +6,9 @@ from string import *
 
 maketestcard = False
 
+ApplyCorrelatedFakeSyst = True
+ApplyCorrelatedPromptSyst = True
+
 # Zero out certain bins
 def zero_out_certain_bins(histo, ignoreBins):
   
@@ -17,14 +20,7 @@ def zero_out_certain_bins(histo, ignoreBins):
 
 # bins options for inclusion in limit setting
 nobins = []
-#noleptons = range(49, 80+1) + range(85, 88+1)
-#onlyleptons = range(0, 48+1) + range(81, 84+1)
 
-# before merging the 2DT bins:
-#noleptons = range(25, 48+1) + range(51, 54+1)
-#onlyleptons = range(1, 24+1) + range(49, 50+1)
-
-# after merging the 2DT bins:
 leptonbins = list(range(25, 48+1)) + list(range(50, 51+1))
 hadronbins = list(range(1, 24+1)) + list(range(49, 49+1))
 
@@ -40,6 +36,7 @@ if len(binstozero) > 0:
 date = '220818'
 date = '220914'
 date = '220924'
+date = '221011'
 
 # Physics processes
 # !!! Maybe already match here the process names and histograms
@@ -227,8 +224,13 @@ for f in signalfiles:
             else: rowc.append('%-14s' % ('-'))
       row = ''.join(rowc)
       fd.write(row+'\n')
-    fd.write('''ShowerShortOne lnN    '''+'''-             -             -             -             -             -             -             -             -             2.0           -             -             -             2.0           -             -             '''*int(hobs.GetXaxis().GetNbins()/4)+'''-             '''*4+'''
-''')
+    if True:
+        fd.write('''ShowerShortOne lnN    '''+'''-             -             -             -             -             -             -             -             -             2.0           -             -             -             2.0           -             -             '''*int(hobs.GetXaxis().GetNbins()/4)+'''-             '''*4+'\n')
+    if ApplyCorrelatedPromptSyst: 
+        fd.write('''ShowerLongSyst lnN    '''+'''-            1.2            -             -             -            1.2            -             -             -              -            -             -             -              -            -             -             '''*int(hobs.GetXaxis().GetNbins()/4)+'''-             '''*4+'\n')
+    if ApplyCorrelatedFakeSyst: 
+        fd.write('''FakeLongSyst lnN      '''+'''-             -             -            1.3            -             -             -            1.3            -              -            -             -             -              -            -             -             '''*int(hobs.GetXaxis().GetNbins()/4)+'''-             '''*4+'\n')
+        fd.write('''FakeShortSyst lnN     '''+'''-             -             -             -             -             -             -              -            -              -            -            1.3            -              -            -            1.3            '''*int(hobs.GetXaxis().GetNbins()/4)+'''-             '''*4+'\n') 
     for bgsys in [['FakeLong', '1', 'One'],['FakeLong', '1', 'Two'],['FakeShort', '1','One'],['FakeShort', '1', 'Two'], ['ShowerLong', '2', 'One'], ['MuonLong', '3', 'One']]:#, ['ShowerShort', '2', 'One']
       #print 'bgsys', bgsys
       
