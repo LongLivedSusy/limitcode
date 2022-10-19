@@ -6,6 +6,9 @@ from string import *
 
 maketestcard = False
 
+if len(sys.argv) > 1: date = sys.argv[1]
+if len(sys.argv) > 2: signalname = sys.argv[2]
+
 ApplyCorrelatedFakeSyst = True
 ApplyCorrelatedPromptSyst = True
 
@@ -29,14 +32,16 @@ binstozero = nobins
 
 # Directory suffix
 dirext = ''
+if ApplyCorrelatedFakeSyst is True or ApplyCorrelatedPromptSyst is True:
+    dirext = dirext + '_' + str(ApplyCorrelatedFakeSyst) + str(ApplyCorrelatedPromptSyst)
 if len(binstozero) > 0:
-    dirext = '_nolep'
+    dirext = dirext + '_nolep'
 
 #date = '210520'
-date = '220818'
-date = '220914'
-date = '220924'
-date = '221011'
+#date = '220818'
+#date = '220914'
+#date = '220924'
+#date = '221011'
 
 # Physics processes
 # !!! Maybe already match here the process names and histograms
@@ -61,11 +66,11 @@ hmn = fb.Get('hMuonBaselineMASTER_BinNumberMethod3')
 hmn.SetName('Muon')
 hfk = fb.Get('hFakeBaselineMASTER_BinNumberMethod1')
 hfk.SetName('Fake')
-hobs = hsh.Clone()
+#hobs = hsh.Clone()
 #hobs.SetName('data_obs')
-hobs.SetName('h_data')
-hobs.Add(hfk)
-hobs.Add(hmn)
+hobs = fb.Get('h_data')
+#hobs.Add(hfk)
+#hobs.Add(hmn)
 
 print(hsh.Integral() + hmn.Integral() + hfk.Integral(), hobs.Integral())
 
@@ -80,7 +85,7 @@ zero_out_certain_bins(hobs, binstozero)
 #print 'Signal: '+signalname
 #signalname = 'T2btLL'
 #signalname = 'T1qqqqLL'
-signalname = 'T1btbtLL'
+#signalname = 'T1btbtLL'
 #signalname = 'T2tbLL'
 #signalname = 'PureHiggsino'
 
