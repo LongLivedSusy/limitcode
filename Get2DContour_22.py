@@ -584,7 +584,8 @@ if __name__ == '__main__':
         xsecTree.Project("xsecUL_%s_%s"%(model,clsType),"mchi:mg",whichCLsVar[clsType])
 
         if not options.signif:
-            fix_hist_byhand(xsecUL[clsType],model,box,clsType, gchipairs)
+            #fix_hist_byhand(xsecUL[clsType],model,box,clsType, gchipairs)
+            a = 2
 
         print "INFO: doing interpolation for %s"%(clsType)
         for i in xrange(1,xsecUL[clsType].GetNbinsX()+1):

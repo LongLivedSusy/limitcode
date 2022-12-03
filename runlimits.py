@@ -198,6 +198,7 @@ for dc in dcs:
             xsecULExpPlus2 = refXsec*float(line.split()[4])
         elif "Significance:" in line:
             signif = float(line.split()[1])
+    if xsecULExp==0.: xsecULObs = 0. 
 
     print "Exp limit:", xsecULExp
     writeTree(box, model, limit2dir, float(mparent), float(mLSP), [xsecULObs], [xsecULExpPlus2], [xsecULExpPlus], [xsecULExp], [xsecULExpMinus], [xsecULExpMinus2], 0)
