@@ -236,7 +236,7 @@ for f in signalfiles:
     if ApplyCorrelatedFakeSyst: 
         fd.write('''FakeLongSyst lnN      '''+'''-             -             -            1.3            -             -             -            1.3            -              -            -             -             -              -            -             -             '''*int(hobs.GetXaxis().GetNbins()/4)+'''-             '''*4+'\n')
         fd.write('''FakeShortSyst lnN     '''+'''-             -             -             -             -             -             -              -            -              -            -            1.3            -              -            -            1.3            '''*int(hobs.GetXaxis().GetNbins()/4)+'''-             '''*4+'\n') 
-    for bgsys in [['FakeLong', '1', 'One'],['FakeLong', '1', 'Two'],['FakeShort', '1','One'],['FakeShort', '1', 'Two'], ['ShowerLong', '2', 'One'], ['MuonLong', '3', 'One']]:#, ['ShowerShort', '2', 'One']
+    for bgsys in [['FakeLong', '1', 'One'],['FakeShort', '1','One'], ['ShowerLong', '2', 'One'], ['MuonLong', '3', 'One']]:#, ['ShowerShort', '2', 'One']
       #print 'bgsys', bgsys
       
       hup, hdown = fb.Get('h'+bgsys[0]+'BaselineMASTER_BinNumberMethod'+bgsys[1]+bgsys[2]+'Up'), fb.Get('h'+bgsys[0]+'BaselineMASTER_BinNumberMethod'+bgsys[1]+bgsys[2]+'Down')
