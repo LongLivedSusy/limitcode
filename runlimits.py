@@ -152,6 +152,15 @@ for dc in dcs:
     limitfln = limitdir+'higgsCombine'+fln+'.AsymptoticLimits.mH120.root'
     print 'Running:', fln
     if os.path.exists(limitfln): continue
+    
+    cardlines = open(datacard).readlines()
+    shrinkfactor = 1.0
+    for line in cardlines:
+        if 'SHRINKFACTOR' in line:
+            shrinkfactor = float(line.strip().split('=')[-1])
+            break
+    print 'got shrinker', shrinkfactor
+        
 #    cmd = 'combine -M AsymptoticLimits '+dc+' --name '+fln+' >& '+logfile
     cmd = 'combine -M AsymptoticLimits '+dc+' --name '+fln+' >& '+logfile
     print cmd
@@ -185,17 +194,17 @@ for dc in dcs:
     print mparent, refXsec
     for line in log:
         if "Observed Limit:" in line:
-            xsecULObs = refXsec*float(line.split()[4])
+            xsecULObs = refXsec*float(line.split()[4])*shrinkfactor
         elif "Expected  2.5%:" in line:
-            xsecULExpMinus2 = refXsec*float(line.split()[4])
+            xsecULExpMinus2 = refXsec*float(line.split()[4])*shrinkfactor
         elif "Expected 16.0%:" in line:
-            xsecULExpMinus = refXsec*float(line.split()[4])
+            xsecULExpMinus = refXsec*float(line.split()[4])*shrinkfactor
         elif "Expected 50.0%:" in line:
-            xsecULExp = refXsec*float(line.split()[4])
+            xsecULExp = refXsec*float(line.split()[4])*shrinkfactor
         elif "Expected 84.0%:" in line:
-            xsecULExpPlus = refXsec*float(line.split()[4])
+            xsecULExpPlus = refXsec*float(line.split()[4])*shrinkfactor
         elif "Expected 97.5%:" in line:
-            xsecULExpPlus2 = refXsec*float(line.split()[4])
+            xsecULExpPlus2 = refXsec*float(line.split()[4])*shrinkfactor
         elif "Significance:" in line:
             signif = float(line.split()[1])
     if xsecULExp==0.: xsecULObs = 0. 

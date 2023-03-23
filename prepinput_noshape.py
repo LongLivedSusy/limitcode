@@ -54,9 +54,9 @@ procs = [
 
 #maindir = '/afs/desy.de/user/k/kutznerv/dust/public/disapptrk/interpretation/Histograms/Indium/v15shutterleps/'
 #maindir = '/afs/desy.de/user/k/kutznerv/dust/public/disapptrk/interpretation/Histograms/Indium/v15/'
-maindir = '/afs/desy.de/user/k/kutznerv/dust/public/disapptrk/interpretation/Histograms/Indium/v16/'
+maindir = '/afs/desy.de/user/k/kutznerv/dust/public/disapptrk/interpretation/Histograms/Indium/v17/'
 
-fb = TFile(maindir+'Background/predictionRun2_unblinded.root')
+fb = TFile(maindir+'Background/predictionRun2.root')
 fb.ls()
 
 # Get all bg histograms
@@ -83,7 +83,7 @@ zero_out_certain_bins(hobs, binstozero)
 
 #signalname = sys.argv[1] 
 #print 'Signal: '+signalname
-#signalname = 'T2btLL'
+signalname = 'T2btLL'
 #signalname = 'T1qqqqLL'
 #signalname = 'T1btbtLL'
 #signalname = 'T2tbLL'
@@ -107,6 +107,7 @@ if not os.path.exists(outdcdir):
 cnt = '''imax 49 number of channels
 jmax %s number of backgrounds
 kmax * number of nuisance parameters
+#SHRINKFACTOR=%f
 ------------------------------------------------------------
 observation           %s
 ------------------------------------------------------------
@@ -132,6 +133,8 @@ for f in signalfiles:
         print ("******* 2:", signalname)
     frn = signalname.replace("AnalysisHists", "limitinput") + '.root'
     fdn = signalname.replace("AnalysisHists", "datacard") + '.txt'
+        
+            
     fs = TFile(signalhistofile)
     if signalname == 'T1qqqqLL' and '1075' in signalhistofile: continue
     print ('*** Signal file:', signalhistofile)
@@ -140,6 +143,12 @@ for f in signalfiles:
     #hsig.SetName('Signal')
     hsig = fs.Get('hBaselineNom_BinNumberTruth')
     hsig.SetName('Signal')
+    
+    if hsig.Integral()>0: shrinkfactor = 10./hsig.GetMaximum()
+    else: shrinkfactor = 1.0
+    hsig.Scale(shrinkfactor)    
+    
+    
     zero_out_certain_bins(hsig, binstozero)
     for sys in systs:
         #if sys == 'Trig' or 'DtSf' in sys: continue
@@ -147,8 +156,10 @@ for f in signalfiles:
         #print sys
         sighistsup[sys] = fs.Get('hBaselineSyst'+sys+'Up_BinNumberTruth')
         sighistsup[sys].SetName('Signal_'+sys+'Up')
+        sighistsup[sys].Scale(shrinkfactor)
         sighistsdn[sys] = fs.Get('hBaselineSyst'+sys+'Down_BinNumberTruth')
         sighistsdn[sys].SetName('Signal_'+sys+'Down')
+        sighistsdn[sys].Scale(shrinkfactor)
         zero_out_certain_bins(sighistsup[sys], binstozero)
         zero_out_certain_bins(sighistsdn[sys], binstozero)
 
@@ -167,6 +178,7 @@ for f in signalfiles:
     # Write BG syst histos
     if maketestcard: fd = open('testypoo2.txt', 'w')    
     else: fd = open(outdcdir+'/'+fdn, 'w')
+        
     print('we hath created', outdcdir+'/'+fdn)
     # Number of data events
     ndatac = []
@@ -175,7 +187,7 @@ for f in signalfiles:
     ndata = str(hobs.Integral())
     # Write the datacard header
     #print nbg, ndata, frn
-    fd.write(cnt % (nbg, ''.join(ndatac)))#ndata))
+    fd.write(cnt % (nbg, shrinkfactor, ''.join(ndatac)))#ndata))
 
     # Yields for processes
     yields = []
@@ -183,6 +195,7 @@ for f in signalfiles:
     for ibin in range(1,hobs.GetXaxis().GetNbins()+1):
       for p in procs:
         #yields.append(gDirectory.Get(p).Integral())
+        print 'doin', p
         yields.append(gDirectory.Get(p).GetBinContent(ibin))
 
     # Write processes and rates
@@ -220,10 +233,12 @@ for f in signalfiles:
       rowc = []
       rowc.append('%-14s ' % sys.strip() +'%-6s ' % 'lnN')
       hup, hdown = fs.Get('hBaselineSyst'+sys+'Up_BinNumberTruth'), fs.Get('hBaselineSyst'+sys+'Down_BinNumberTruth')
+      hup.Scale(shrinkfactor)
+      hdown.Scale(shrinkfactor)
       for ibin in range(1,hobs.GetXaxis().GetNbins()+1):
         for p in procs:
             relevant = p=='Signal'
-            if relevant:
+            if relevant:             
                 if (hup.GetBinContent(ibin)>0 and hdown.GetBinContent(ibin)>0) and not abs(hup.GetBinContent(ibin)==hdown.GetBinContent(ibin)): rowc.append('%-14s' % (str(round(hup.GetBinContent(ibin)/hsig.GetBinContent(ibin),3))+'/'+str(round(hdown.GetBinContent(ibin)/hsig.GetBinContent(ibin),3))))
                 else: rowc.append('%-14s' % ('1.0'))
             else: rowc.append('%-14s' % ('-'))
