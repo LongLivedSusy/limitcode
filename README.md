@@ -1,5 +1,5 @@
 # limitcode
-limit code used for the disappearing track analysis
+Limit code so far used for disappearing track (SUS-21-006), soft lepton tracks (SUS-24-003), and soft displaced track (SUS-24-012). 
 
 Steps:
 1. prepinput.py : Prepares the input for limits.  
