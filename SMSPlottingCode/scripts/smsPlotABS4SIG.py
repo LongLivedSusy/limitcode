@@ -1,7 +1,7 @@
 import ROOT as rt
 from array import *
-from sms import *
-from color import *
+from .sms import *
+from .color import *
 
 class smsPlotABS(object):
     # modelname is the sms name (see sms.py)

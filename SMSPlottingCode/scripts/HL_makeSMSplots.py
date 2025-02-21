@@ -1,10 +1,10 @@
 import sys
-from inputFile import *
+from .inputFile import *
 #from smsPlotXSEC2 import *
 #from smsPlotXSEC3 import *
-from smsPlotXSEC4 import *
-from smsPlotCONT import *
-from smsPlotBrazil import *
+from .smsPlotXSEC4 import *
+from .smsPlotCONT import *
+from .smsPlotBrazil import *
 
 if __name__ == '__main__':
     rt.gROOT.SetBatch()

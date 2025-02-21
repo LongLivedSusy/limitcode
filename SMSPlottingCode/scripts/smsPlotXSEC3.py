@@ -1,7 +1,7 @@
 import ROOT as rt
 from array import *
-from sms import *
-from smsPlotABS3 import *
+from .sms import *
+from .smsPlotABS3 import *
 
 # class producing the 2D plot with xsec colors
 class smsPlotXSEC(smsPlotABS):

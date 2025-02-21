@@ -1,8 +1,8 @@
 import sys
-from inputFile import *
-from smsPlot4SIG import *
-from smsPlotCONT import *
-from smsPlotBrazil import *
+from .inputFile import *
+from .smsPlot4SIG import *
+from .smsPlotCONT import *
+from .smsPlotBrazil import *
 
 if __name__ == '__main__':
     rt.gROOT.SetBatch()

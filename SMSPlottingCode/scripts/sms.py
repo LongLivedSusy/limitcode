@@ -99,18 +99,99 @@ class sms():
         elif modelname.find("T1bri") != -1: self.T1bri()
         #elif modelname.find("T1qqqq") != -1: self.T1qqqq()
         elif modelname.find("T1qqqqLL") != -1: self.T1qqqqLL()
-        elif modelname.find("T1btbtLL") != -1: self.T1btbtLL()
         elif modelname.find("T2bb") != -1: self.T2bb()
         elif modelname.find("T2qq") != -1: self.T2qq()
-        elif modelname.find("T6bbHH") != -1: self.T6bbHH()
+        elif modelname.find("T6bbHH") != -1: self.T6bbHH()            
         elif modelname.find("T2ttGluino") != -1: self.T2ttGluino()
         elif modelname.find("T2tt") != -1: self.T2tt()
         elif modelname.find("T2btLL") != -1: self.T2btLL()
-        elif modelname.find("T2tbLL") != -1: self.T2tbLL()
         elif modelname.find("T2tb") != -1: self.T2tb()
         elif modelname.find("T2bw") != -1: self.T2bw()
         elif modelname.find("T2bH") != -1: self.T2bH()
         elif modelname.find("PureHiggsino") != -1: self.PureHiggsino()
+        elif modelname.find("PureWino") != -1: self.PureWino()
+
+
+
+    def PureHiggsino(self):
+        # model name
+        IsYuval = False
+        self.modelname = "PureHiggsino"
+        # decay chain
+        self.label= "pp #rightarrow #tilde{#chi}#tilde{#chi}, #tilde{#chi}^{#pm}_{1}#rightarrow#pi^{#pm}#tilde{#chi}_{1}^{0}"
+        self.masslabel = "higgsino, #Deltam^{0}=2#Deltam^{#pm}"
+        # plot boundary. The top 1/4 of the y axis is taken by the legend
+        self.Xmin = 100#-10#best for zoomed higgsino DT so far?
+        #self.Xmax = 280#best for zoomed higgsino DT so far?
+        #self.Xmax = 1040 #565 also tested        
+        #self.Xmax = 160
+        self.Xmax = 215# soft pion full lumi
+        #self.Ymin = 0.0#PAS
+        self.Ymin = 0.135#-0.1#DTk PAPER!
+        self.Ymax = 2.3#SDP full lumi!
+        #self.Ymax = 1.1# DT #DTk PAS  
+        #self.Ymax = 0.6# DT for DTk paper zoom out
+        self.Zmin = .001#for DT paper and stuff        
+        if IsYuval:
+            self.Zmin = .5#used for Yuval full run 2
+            #self.Ymax = 3.1#dilep
+            self.Ymax = 5.1#dilep paper #zoom out, good one 
+            self.Xmax = 185#+10#dilep including alex           
+        #self.Zmax = 1000#DT        
+        self.Zmin = .5#used .5 for SDP
+        self.Zmax = 100#pretty universal        
+        # produce sparticle
+        self.sParticle = "m_{#tilde{#chi}^{#pm}_{1}} (GeV)"
+        # LSP
+        #self.LSP = "#Deltam^{#pm} (GeV)"
+        self.LSP = "#Deltam^{#pm} = #Deltam(#tilde{#chi}^{#pm}_{1},#tilde{#chi}^{0}_{1}) (GeV)" 
+        # diagonal position: mLSP = mSbotton - 150
+        self.diagX = array('d',[100000,200000,self.Xmin])
+        self.diagY = array('d',[1500, 200000-150,self.Xmax])
+        #self.divX = 407
+        self.divX = 407
+        self.divY = 2*408
+        self.optX = True
+        self.optY = True
+        
+    def PureWino(self):
+        # model name
+        self.modelname = "PureWino"
+        # decay chain
+        self.label= "pp #rightarrow #tilde{#chi}#tilde{#chi}, #tilde{#chi}^{#pm}_{1}#rightarrow#pi^{#pm}#tilde{#chi}_{1}^{0}"
+        self.masslabel = "   wino-like #tilde{#chi}_{1}^{0}"
+        # plot boundary. The top 1/4 of the y axis is taken by the legend
+        self.Xmin = 100#best for zoomed higgsino DT so far?
+        self.Xmax = 280#best for zoomed higgsino DT so far?
+        self.Xmax = 1040 #565 also tested        
+        #self.Xmax = 175#dilep
+        self.Ymin = 0.0#PAS
+        self.Ymin = 0.135#PAPER!
+        self.Ymax = 3.1#dilep
+        self.Ymax = 5.1#dilep #zoom out
+        self.Ymax = 1.1# DT #PAS  
+        self.Ymax = 0.6# DT
+        self.Zmax = 100#pretty universal
+        #self.Zmax = 1000#DT        
+        self.Zmin = .0005#used .5 for SDP
+        self.Zmin = .001#for DT
+        #self.Zmin = 1#used .5 for SDP
+        #self.Zmin = 8#used for SPD partial unblinding
+        #self.Zmin = 0.1#for ful run 2 lumi
+        # produce sparticle
+        self.sParticle = "m_{#tilde{#chi}^{#pm}_{1}} (GeV)"
+        # LSP
+        #self.LSP = "#Deltam^{#pm} (GeV)"
+        self.LSP = "#Deltam^{#pm} = #Deltam(#tilde{#chi}^{#pm}_{1},#tilde{#chi}^{0}_{1}) (GeV)" 
+        # diagonal position: mLSP = mSbotton - 150
+        self.diagX = array('d',[100000,200000,self.Xmin])
+        self.diagY = array('d',[1500, 200000-150,self.Xmax])
+        #self.divX = 407
+        self.divX = 407
+        self.divY = 2*408
+        self.optX = True
+        self.optY = True     
+        
 
     def T2bH(self):
         # model name
@@ -197,12 +278,11 @@ class sms():
         self.masslabel = ""
         # scan range to plot
         self.Xmin = 600
-        self.Xmax = 2800
+        self.Xmax = 2300
         self.Ymin = 0
-        #self.Ymax = 2125
-        self.Ymax = 1900
+        self.Ymax = 2125
         self.Zmax = 2
-        self.Zmin = 1.e-4
+        self.Zmin = 1.e-5
         # produce sparticle
         self.sParticle = "m_{#tilde{g}} (GeV)"
         # LSP
@@ -532,33 +612,7 @@ class sms():
         self.modelname = "T1qqqqLL"
         # decay chain
         self.label= "pp #rightarrow #tilde{g}#tilde{g}, #tilde{g} #rightarrow q#bar{q}#tilde{#chi}^{#pm}_{1}"
-        self.masslabel = "c#tau(#tilde{#chi}^{#pm}) = 10 cm"
-        # plot boundary. The top 1/4 of the y axis is taken by the legend
-        self.Xmin = 1000
-        self.Xmax = 2800
-        self.Ymin = 1
-        #self.Ymax = 3300
-        self.Ymax = 2775
-        self.Zmax = 10.
-        self.Zmin = 1.e-5
-        # produce sparticle
-        self.sParticle = "m_{#tilde{g}} (GeV)"
-        # LSP
-        self.LSP = "m_{#tilde{#chi}^{0}_{1}} (GeV)"
-        # diagonal position: mLSP = mgluino - 2mtop
-        self.diagX = array('d',[0,20000,self.Xmin])
-        self.diagY = array('d',[-25, 20000-25,self.Xmax])
-        self.divX = 408
-        self.divY = 408
-        self.optX = True
-        self.optY = True
-
-    def T1btbtLL(self):
-        # model name
-        self.modelname = "T1btbtLL"
-        # decay chain
-        self.label= "pp #rightarrow #tilde{g}#tilde{g}, #tilde{g} #rightarrow b#bar{t}#tilde{#chi}^{#pm}_{1}"
-        self.masslabel = "c#tau(#tilde{#chi}^{#pm}) = 10 cm"
+        self.masslabel = "c#tau(#tilde{#chi}^{#pm}) = 200 cm"
         # plot boundary. The top 1/4 of the y axis is taken by the legend
         self.Xmin = 1000
         self.Xmax = 2800
@@ -707,7 +761,7 @@ class sms():
         # decay chain
         self.label= "pp #rightarrow #tilde{t}#tilde{t}, #tilde{t} #rightarrow t#tilde{#chi}^{0}_{1} / b#tilde{#chi}^{#pm}_{1}"
         #self.masslabel = "m_{#tilde{#chi}^{#pm}_{1}}-m_{#tilde{#chi}^{0}_{1}} = 5 GeV"
-        self.masslabel = "c#tau(#tilde{#chi}^{#pm}) = 10 cm"
+        self.masslabel = "ctau = 200"
         # plot boundary. The top 1/4 of the y axis is taken by the legend
         self.Xmin = 400
         self.Xmax = 2500
@@ -723,38 +777,10 @@ class sms():
         self.diagX = array('d',[0,20000,self.Xmin])
         self.diagY = array('d',[-25, 20000-25,self.Xmax])
         #self.divX = 407
-        self.divX = 509#409
-        self.divY = 508#408
+        self.divX = 409
+        self.divY = 408
         self.optX = True
         self.optY = True
-
-    def T2tbLL(self):
-        # model name
-        self.modelname = "T2tbLL"
-        # decay chain
-        self.label= "pp #rightarrow #tilde{b}#tilde{b}, #tilde{b} #rightarrow b#tilde{#chi}^{0}_{1} / t#tilde{#chi}^{#pm}_{1}"
-        #self.masslabel = "m_{#tilde{#chi}^{#pm}_{1}}-m_{#tilde{#chi}^{0}_{1}} = 5 GeV"
-        self.masslabel = "c#tau(#tilde{#chi}^{#pm}) = 10 cm"
-        # plot boundary. The top 1/4 of the y axis is taken by the legend
-        self.Xmin = 400
-        self.Xmax = 2500
-        self.Ymin = 0
-        self.Ymax = 2000
-        self.Zmax = 0.1
-        self.Zmin = 1.e-5
-        # produce sparticle
-        self.sParticle = "m_{#tilde{b}} (GeV)"
-        # LSP
-        self.LSP = "m_{#tilde{#chi}^{0}_{1}} (GeV)"
-        # diagonal position: mLSP = mgluino - 2mtop
-        self.diagX = array('d',[0,20000,self.Xmin])
-        self.diagY = array('d',[-25, 20000-25,self.Xmax])
-        #self.divX = 407
-        self.divX = 509#409
-        self.divY = 508#408
-        self.optX = True
-        self.optY = True
-
 
     def T2tb(self):
         # model name
@@ -905,35 +931,5 @@ class sms():
         self.diagY = array('d',[-300, 20000-300, self.Xmax])
         self.divX = 404
         self.divY = 409
-        self.optX = True
-        self.optY = True
-
-    def PureHiggsino(self):
-        # model name
-        self.modelname = "PureHiggsino"
-        # decay chain
-        self.label= "pp #rightarrow #tilde{#chi}#tilde{#chi}, #tilde{#chi}^{#pm}#rightarrow#pi^{#pm}#tilde{#chi}_{1}^{0}"
-        self.masslabel = "#Deltam^{0}= 2#Deltam^{#pm}"
-        # plot boundary. The top 1/4 of the y axis is taken by the legend
-        self.Xmin = 100
-        self.Xmax = 250
-        self.Ymin = 0.0
-        self.Ymax = 2.1#others
-        #self.Ymax = 1.0# DT
-        self.Zmax = 100
-        self.Zmax = 40 #DT
-        self.Zmin = .0005 #used .5 for SDP
-        self.Zmin = 1 #used .5 for SDP
-        self.Zmin = .1 #for DT
-        # produce sparticle
-        self.sParticle = "m_{#tilde{#chi}^{#pm}_{1}} (GeV)"
-        # LSP
-        self.LSP = "#Deltam^{#pm} (GeV)"
-        # diagonal position: mLSP = mSbotton - 150
-        self.diagX = array('d',[100000,200000,self.Xmin])
-        self.diagY = array('d',[1500, 200000-150,self.Xmax])
-        #self.divX = 407
-        self.divX = 407
-        self.divY = 2*408
         self.optX = True
         self.optY = True

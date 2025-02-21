@@ -1,8 +1,8 @@
 import sys
-from inputFile import *
-from smsPlotXSEC import *
-from smsPlotCONT import *
-from smsPlotBrazil import *
+from .inputFile import *
+from .smsPlotXSEC import *
+from .smsPlotCONT import *
+from .smsPlotBrazil import *
 
 if __name__ == '__main__':
     rt.gROOT.SetBatch()
@@ -12,7 +12,7 @@ if __name__ == '__main__':
     modelname = sys.argv[1].split("/")[-1].split("_")[0]
     analysisLabel = sys.argv[1].split("/")[-1].split("_")[1]
     outputname = sys.argv[2]
-    print modelname
+    print(modelname)
 
     # read the config file
     fileIN = inputFile(filename)

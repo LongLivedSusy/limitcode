@@ -3,7 +3,16 @@ from array import *
 from sms import *
 from smsPlotABS import *
 import time
+tl = rt.TLatex()
 
+
+def pause():
+        import sys
+        print(('press enter'))
+        sys.stdout.flush()
+        raw_input('')
+
+        
 # class producing the 2D plot with xsec colors
 class smsPlotXSEC(smsPlotABS):
 
@@ -12,15 +21,18 @@ class smsPlotXSEC(smsPlotABS):
         self.LABEL = label
         # canvas for the plot
         self.c = rt.TCanvas("cCONT_%s" %label,"cCONT_%s" %label,600,600)
-        print histo['histogram'].GetName(), histo['histogram'].GetMinimum(), histo['histogram'].GetMaximum()
+        print((histo['histogram'].GetName(), histo['histogram'].GetMinimum(), histo['histogram'].GetMaximum()))
         self.histo = histo['histogram']
         # canvas style
         self.setStyle()
         self.setStyleCOLZ()
         self.c.cd()
         self.c.SetLogz(1)
-        self.histo.Draw('colz')
-        self.c.Print('x.pdf')
+        print(('this is the initial draw...'))
+        self.histo.Draw('colz text')##for debugging
+        #self.c.Update()
+
+        #import pdb; pdb.set_trace()
 
     # define the plot canvas
     def setStyleCOLZ(self):
@@ -52,7 +64,7 @@ class smsPlotXSEC(smsPlotABS):
         palette.SetLabelSize(0.035)
 
     def DrawPaletteLabel(self):
-        textCOLZ = rt.TLatex(0.98,0.15,"95% C.L. upper limit on cross section [pb]")
+        textCOLZ = rt.TLatex(0.98,0.15,"95% CL upper limit on cross section [pb]")
         textCOLZ.SetNDC()
         #textCOLZ.SetTextAlign(13)
         textCOLZ.SetTextFont(42)
@@ -62,10 +74,14 @@ class smsPlotXSEC(smsPlotABS):
         self.c.textCOLZ = textCOLZ
 
     def Draw(self):
+                
         self.emptyHisto.GetXaxis().SetRangeUser(self.model.Xmin, self.model.Xmax)
         self.emptyHisto.GetYaxis().SetRangeUser(self.model.Ymin, self.model.Ymax)
+        self.histo.GetYaxis().SetRangeUser(self.model.Ymin, self.model.Ymax-.1)
+        self.histo.GetXaxis().SetRangeUser(self.model.Xmin, self.model.Xmax-.1)        
         self.emptyHisto.Draw()
         #self.c.Print('x.pdf')
+
 
         # set x axis
         self.histo.GetXaxis().SetLabelFont(42)
@@ -77,23 +93,31 @@ class smsPlotXSEC(smsPlotABS):
         self.histo.GetXaxis().SetTitle(self.model.sParticle)
         #self.emptyHisto.GetXaxis().CenterTitle(True)
 
+
         # set y axis
         self.histo.GetYaxis().SetLabelFont(42)
         self.histo.GetYaxis().SetLabelSize(0.04)
-        self.histo.GetYaxis().SetNdivisions(self.model.divY,self.model.optY)
+        self.histo.GetYaxis().SetNdivisions(self.model.divY,self.model.optY)        
         self.histo.GetYaxis().SetTitleFont(42)
         self.histo.GetYaxis().SetTitleSize(0.05)
         self.histo.GetYaxis().SetTitleOffset(1.6)
         self.histo.GetYaxis().SetTitle(self.model.LSP)
-        #self.emptyHisto.GetYaxis().CenterTitle(True)
 
-        self.histo.Draw("COLZ")
+        self.histo.LabelsDeflate('X')
+            
+        self.histo.Draw("COLZ")# text
+
+
         self.DrawDiagonal()
         self.DrawLines()
+
         try:
             if self.model.diagXtop and self.model.diagYtop and self.model.fillXtop and self.model.fillYtop: self.DrawDiagonalTop()
         except:
             pass
+        
         self.DrawText()
-        self.DrawLegend()
+        self.DrawLegend()        
         self.DrawPaletteLabel()
+        self.histo.Draw('axis same')
+

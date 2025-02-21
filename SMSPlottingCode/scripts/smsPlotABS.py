@@ -3,7 +3,16 @@ from array import *
 from sms import *
 from color import *
 
-samsyoffset = 0.018
+#sammyoffset = 0.018
+sammyoffset = 0
+#sammyoffset = -0.018
+#sammyoffset = 0.003
+
+
+Alex = False
+Yuval = False
+Viktor = False
+Moritz = True
 
 class smsPlotABS(object):
     # modelname is the sms name (see sms.py)
@@ -17,12 +26,12 @@ class smsPlotABS(object):
         self.standardDef(modelname, histo, obsLimits, expLimits, expLimits2, energy, lumi, preliminary, boxes)
         self.LABEL = label
         self.c = rt.TCanvas("cABS_%s" %label,"cABS_%s" %label,300,300)
-        self.histo = histo
+        self.histo = histo        
 
     def standardDef(self, modelname, histo, obsLimits, expLimits, expLimits2, energy, lumi, preliminary, boxes):
         # which SMS?
         self.model = sms(modelname)
-        print "model:", self.model.modelname, self.model.label, self.model.Xmin, self.model.Xmax, self.model.Zmin, self.model.Zmax
+        print ("model:", self.model.modelname, self.model.label, self.model.Xmin, self.model.Xmax, self.model.Zmin, self.model.Zmax)
         self.OBS = obsLimits
         self.EXP = expLimits
         self.EXP2 = expLimits2
@@ -43,8 +52,8 @@ class smsPlotABS(object):
         rt.gStyle.SetOptTitle(0)        
 
         self.c.SetLogz()
-        #self.c.SetTickx(1)
-        #self.c.SetTicky(1)
+        self.c.SetTickx(1)
+        self.c.SetTicky(1)
 
         self.c.SetRightMargin(0.19)
         self.c.SetTopMargin(0.08)
@@ -69,10 +78,12 @@ class smsPlotABS(object):
         self.emptyHisto.GetYaxis().SetTitleSize(0.05)
         self.emptyHisto.GetYaxis().SetTitleOffset(1.6)
         self.emptyHisto.GetYaxis().SetTitle(self.model.LSP)
-        #self.emptyHisto.GetYaxis().CenterTitle(True)
+
+
                 
     def DrawText(self):
         #redraw axes
+        Viktor = False
         self.c.RedrawAxis()
         # white background
         graphWhite = rt.TGraph(5)
@@ -83,13 +94,20 @@ class smsPlotABS(object):
         graphWhite.SetLineColor(rt.kBlack)
         graphWhite.SetLineStyle(1)
         graphWhite.SetLineWidth(3)
-        graphWhite.SetPoint(0,self.model.Xmin, self.model.Ymax)
-        graphWhite.SetPoint(1,self.model.Xmax, self.model.Ymax)
-        graphWhite.SetPoint(2,self.model.Xmax, self.model.Ymax*0.785)
-        graphWhite.SetPoint(3,self.model.Xmin, self.model.Ymax*0.785)
+        #graphWhite.SetPoint(0,self.model.Xmin, self.model.Ymax*0.965)#dt and stuff
+        #graphWhite.SetPoint(1,self.model.Xmax, self.model.Ymax*0.965)#dt and stuff
+        graphWhite.SetPoint(0,self.model.Xmin, self.model.Ymax*0.99)
+        graphWhite.SetPoint(1,self.model.Xmax, self.model.Ymax*0.99)        
+        graphWhite.SetPoint(2,self.model.Xmax, self.model.Ymax*0.77)##SOS with upper limit of 6ish GeV
+        graphWhite.SetPoint(3,self.model.Xmin, self.model.Ymax*0.77)##SOS with upper limit of 6ish GeV
+        if Viktor:
+            graphWhite.SetPoint(2,self.model.Xmax, self.model.Ymax*0.745)##DT with upper y plot limit of 1 GeV
+            graphWhite.SetPoint(3,self.model.Xmin, self.model.Ymax*0.745)##DT with upper y plot limit of 1 GeV
+            graphWhite.SetPoint(2,self.model.Xmax, self.model.Ymax*0.695)##DT with upper y plot limit of 1 GeV
+            graphWhite.SetPoint(3,self.model.Xmin, self.model.Ymax*0.695)##DT with upper y plot limit of 1 GeV        
         graphWhite.SetPoint(4,self.model.Xmin, self.model.Ymax)
-        graphWhite.Draw("FSAME")
-        graphWhite.Draw("LSAME")
+        graphWhite.Draw("FSAME")####
+        graphWhite.Draw("LSAME")####
         self.c.graphWhite = graphWhite
 
         # CMS LABEL
@@ -103,7 +121,7 @@ class smsPlotABS(object):
         textCMS.SetTextSize(0.05)
         textCMS.Draw()
         if float(self.lumi) > 1000000.:
-            textCMS1 = rt.TLatex(0.57,0.97,"%.0f ab^{-1} (%s TeV)" %(float(self.lumi)/1000000., self.energy))
+            textCMS1 = rt.TLatex(0.57,0.97,"%d ab^{-1} (%s TeV)" %(float(self.lumi)/1000000., self.energy))
         else:
             textCMS1 = rt.TLatex(0.57,0.97,"%.1f fb^{-1} (%s TeV)" %(float(self.lumi)/1000., self.energy))
         textCMS1.SetNDC()
@@ -114,7 +132,7 @@ class smsPlotABS(object):
         self.c.textCMS = textCMS
         self.c.textCMS1 = textCMS1
         # MODEL LABEL        
-        textModelLabel= rt.TLatex(0.185,0.90+samsyoffset,"%s" %self.model.label)
+        textModelLabel= rt.TLatex(0.2,0.903+sammyoffset,"%s" %self.model.label)
         #textModelLabel= rt.TLatex(0.16,0.90,"%s" %self.model.label)
         #textModelLabel= rt.TLatex(0.16,0.915,"%s" %self.model.label)
         textModelLabel.SetNDC()
@@ -126,15 +144,15 @@ class smsPlotABS(object):
         
         #textModelLabel2 = rt.TLatex(0.56,0.88,"NLO+NLL exclusion")
         #textModelLabel2 = rt.TLatex(0.52,0.725,"NLO+NLL exclusion")
-        textModelLabel2 = rt.TLatex(0.51,0.885+samsyoffset,"NLO+NLL exclusion")##this is drawn
+        textModelLabel2 = rt.TLatex(0.51,0.885+sammyoffset,"NLO+NLL exclusion")##this is drawn
         textModelLabel2.SetNDC()
         textModelLabel2.SetTextAlign(13)
         textModelLabel2.SetTextFont(42)
-        textModelLabel2.SetTextSize(0.036)
+        textModelLabel2.SetTextSize(0.035)
         textModelLabel2.Draw()
         self.c.textModelLabel2 = textModelLabel2
         # MASS LABEL
-        textMassLabel= rt.TLatex(0.575,0.82+samsyoffset+.01,"%s"%self.model.masslabel)
+        textMassLabel= rt.TLatex(0.51,0.82+sammyoffset+.02,"%s"%self.model.masslabel)
         textMassLabel.SetNDC()
         textMassLabel.SetTextAlign(13)
         textMassLabel.SetTextFont(42)
@@ -142,7 +160,7 @@ class smsPlotABS(object):
         textMassLabel.Draw()
         self.c.textNLONLL = textMassLabel
         # BOXES LABEL
-        textBoxesLabel= rt.TLatex(0.18,0.73+samsyoffset,"%s" %self.boxes.replace("_"," "))
+        textBoxesLabel= rt.TLatex(0.18,0.73+sammyoffset,"%s" %self.boxes.replace("_"," "))
         textBoxesLabel.SetNDC()
         textBoxesLabel.SetTextAlign(13)
         textBoxesLabel.SetTextFont(52)
@@ -154,75 +172,137 @@ class smsPlotABS(object):
         # save the output
         self.c.SaveAs("%s.pdf" %label)
         self.c.SaveAs("%s.png" %label)
-        self.c.SaveAs("%s.C" %label)
+        #self.c.SaveAs("%s.C" %label)
+        basehist = None
+        for obj in self.c.GetListOfPrimitives():
+            if obj.InheritsFrom('TH2'):
+                obj.SetTitle('')
+                basehist = obj.Clone("basehist")        
+        newfile = rt.TFile(label+'.root', 'recreate')
+        basehist.Reset()
+        print('offset was', basehist.GetYaxis().GetTitleOffset())
+        basehist.GetYaxis().SetTitleOffset(0.9)
+        basehist.SetTitle('')
+        basehist.Write()
+        self.c.Write()
+        print('created rootfile', newfile)
+        newfile.Close()
         
     def DrawLegend(self):
         xRange = self.model.Xmax-self.model.Xmin
         yRange = self.model.Ymax-self.model.Ymin
         
+        ###also needed in DrawText
+        if Viktor:
+            #ystart_leglines = self.model.Ymax-0.29 #DT PAS
+            ystart_leglines = self.model.Ymax-0.245 #DT mass 1000
+        elif (Alex or Yuval): ystart_leglines=self.model.Ymax-0.73
+        elif Moritz: ystart_leglines  = self.model.Ymax-0.42 #DT mass 1000
+        else: ystart_leglines = self.model.Ymax
+        #LObs.SetPoint(0,105,0.103+ystart_leglines)
+        #LObs.SetPoint(1,115,0.103+ystart_leglines)
+                
+        LObsP = rt.TGraph(2)
+        LObsP.SetName("LObsP")
+        LObsP.SetTitle("LObsP")
+        try:
+            LObsP.SetLineColor(rt.kBlack)
+        except TypeError:
+            LObsP.SetLineColor(rt.kBlack)
+        LObsP.SetLineStyle(7)
+        LObsP.SetLineWidth(2)
+        LObsP.SetMarkerStyle(20)
+        if Alex or Yuval:
+            LObsP.SetPoint(0,102,0.173+ystart_leglines)#zoom in x 280 or so
+            LObsP.SetPoint(1,106.5,0.173+ystart_leglines)#zoom in x 280 or so
+        elif Moritz: 
+            LObsP.SetPoint(0,105,0.153+ystart_leglines)#zoom in x 280 or so
+            LObsP.SetPoint(1,110.5,0.153+ystart_leglines)#zoom in x 280 or so
+        else: 
+            LObsP.SetPoint(0,130,0.111+ystart_leglines)
+            LObsP.SetPoint(1,190,0.111+ystart_leglines)        
+        
         LObs = rt.TGraph(2)
         LObs.SetName("LObs")
         LObs.SetTitle("LObs")
         try:
-            LObs.SetLineColor(color(self.OBS['colorLine']))
+            LObs.SetLineColor(rt.kBlack)
         except TypeError:
             LObs.SetLineColor(rt.kBlack)
         LObs.SetLineStyle(1)
         LObs.SetLineWidth(4)
         LObs.SetMarkerStyle(20)
-        LObs.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.35*yRange/100*10+4000*samsyoffset)
-        LObs.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.35*yRange/100*10+4000*samsyoffset)
         
-        LObsP = rt.TGraph(2)
-        LObsP.SetName("LObsP")
-        LObsP.SetTitle("LObsP")
-        try:
-            LObsP.SetLineColor(color(self.OBS['colorLine']))
-        except TypeError:
-            LObsP.SetLineColor(rt.kBlack)
-        LObsP.SetLineStyle(1)
-        LObsP.SetLineWidth(2)
-        LObsP.SetMarkerStyle(20)
-        LObsP.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.20*yRange/100*10+4000*samsyoffset)
-        LObsP.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.20*yRange/100*10+4000*samsyoffset)
-        
+        if Alex or Yuval:
+            LObs.SetPoint(0,102,0.103+ystart_leglines)
+            LObs.SetPoint(1,106.5,0.103+ystart_leglines)
+        elif Moritz:
+            LObs.SetPoint(0,105,0.103+ystart_leglines)
+            LObs.SetPoint(1,110.5,0.103+ystart_leglines)            
+        else: 
+            LObs.SetPoint(0,130,0.103+ystart_leglines)
+            LObs.SetPoint(1,190,0.103+ystart_leglines)                       
+                
         LObsM = rt.TGraph(2)
         LObsM.SetName("LObsM")
         LObsM.SetTitle("LObsM")
         try:
-            LObsM.SetLineColor(color(self.OBS['colorLine']))
+            LObsM.SetLineColor(rt.kBlack)
         except TypeError:
             LObsP.SetLineColor(rt.kBlack)
-        LObsM.SetLineStyle(1)
+        LObsM.SetLineStyle(7)
         LObsM.SetLineWidth(2)
         LObsM.SetMarkerStyle(20)
-        LObsM.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.50*yRange/100*10+4000*samsyoffset)
-        LObsM.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.50*yRange/100*10+4000*samsyoffset)
+        if Alex or Yuval:
+            LObsM.SetPoint(0,102,0.043+ystart_leglines)#zoom in x 280 or so
+            LObsM.SetPoint(1,106.5,0.043+ystart_leglines)#zoom in x 280 or so
+        elif Moritz:
+            LObsM.SetPoint(0,105,0.063+ystart_leglines)#zoom in x 280 or so
+            LObsM.SetPoint(1,110.5,0.063+ystart_leglines)#zoom in x 280 or so            
+        else: 
+            LObsM.SetPoint(0,130,0.095+ystart_leglines)
+            LObsM.SetPoint(1,190,0.095+ystart_leglines)        
         
+        if Yuval: textExp = rt.TLatex(0.24,0.77, "Expected#pm1, #pm2 #sigma_{exp}")
+        else: textExp = rt.TLatex(0.24,0.77, "Expected#pm1 #sigma_{exp}")
+        textExp.SetNDC()        
+        textExp.SetTextFont(42)
+        textExp.SetTextSize(0.035)
+        textExp.Draw()
+        self.c.textExp = textExp
         
-        textObs = rt.TLatex(self.model.Xmin+11*xRange/100, self.model.Ymax-1.50*yRange/100*10+4000*samsyoffset, "Observed #pm 1 #sigma_{theory}")
-        textObs.SetTextFont(42)
-        textObs.SetTextSize(0.040)
-        textObs.Draw()
-        self.c.textObs = textObs
-
         LExpP = rt.TGraph(2)
         LExpP.SetName("LExpP")
         LExpP.SetTitle("LExpP")
         LExpP.SetLineColor(color(self.EXP['colorLine']))
         LExpP.SetLineStyle(7)
         LExpP.SetLineWidth(2)  
-        LExpP.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.85*yRange/100*10+4000*samsyoffset)
-        LExpP.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.85*yRange/100*10+4000*samsyoffset)
+        if Alex or Yuval:
+            LExpP.SetPoint(0,102,-0.3+ystart_leglines)#zoom in x 280 or so
+            LExpP.SetPoint(1,106.5,-0.3+ystart_leglines)#zoom in x 280 or so
+        elif Moritz:
+            LExpP.SetPoint(0,105,-0.07+ystart_leglines)#zoom in x 280 or so
+            LExpP.SetPoint(1,110.5,-0.07+ystart_leglines)#zoom in x 280 or so            
+        else:
+            LExpP.SetPoint(0,130,0.088+ystart_leglines)
+            LExpP.SetPoint(1,190,0.088+ystart_leglines)        
         
         LExp = rt.TGraph(2)
         LExp.SetName("LExp")
         LExp.SetTitle("LExp")
         LExp.SetLineColor(color(self.EXP['colorLine']))
-        LExp.SetLineStyle(7)
+        LExp.SetMarkerSize(0)
+        LExp.SetLineStyle(1)
         LExp.SetLineWidth(4)
-        LExp.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-2.00*yRange/100*10+4000*samsyoffset)
-        LExp.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-2.00*yRange/100*10+4000*samsyoffset)
+        if Alex or Yuval:
+            LExp.SetPoint(0,102,-0.22+ystart_leglines)#zoom in x 280 or so
+            LExp.SetPoint(1,106.5,-0.22+ystart_leglines)#zoom in x 280 or so
+        elif Moritz:
+            LExp.SetPoint(0,105,-0.03+ystart_leglines)#zoom in x 280 or so
+            LExp.SetPoint(1,110.5,-0.03+ystart_leglines)#zoom in x 280 or so            
+        else: 
+            LExp.SetPoint(0,130,0.080+ystart_leglines)
+            LExp.SetPoint(1,190,0.080+ystart_leglines)        
         
         LExpM = rt.TGraph(2)
         LExpM.SetName("LExpM")
@@ -230,33 +310,55 @@ class smsPlotABS(object):
         LExpM.SetLineColor(color(self.EXP['colorLine']))
         LExpM.SetLineStyle(7)
         LExpM.SetLineWidth(2)  
-        LExpM.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-2.15*yRange/100*10+4000*samsyoffset)
-        LExpM.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-2.15*yRange/100*10+4000*samsyoffset)
-
-        LExpP2 = rt.TGraph(2)
-        LExpP2.SetName("LExpP2")
-        LExpP2.SetTitle("LExpP2")
-        LExpP2.SetLineColor(color(self.EXP2['colorLine']))
-        LExpP2.SetLineStyle(7)
-        LExpP2.SetLineWidth(2)  
-        LExpP2.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-1.75*yRange/100*10+4000*samsyoffset)
-        LExpP2.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-1.75*yRange/100*10+4000*samsyoffset)
-
-        LExpM2 = rt.TGraph(2)
-        LExpM2.SetName("LExpM")
-        LExpM2.SetTitle("LExpM")
-        LExpM2.SetLineColor(color(self.EXP2['colorLine']))
-        LExpM2.SetLineStyle(7)
-        LExpM2.SetLineWidth(2)  
-        LExpM2.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-2.25*yRange/100*10+4000*samsyoffset)
-        LExpM2.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-2.25*yRange/100*10+4000*samsyoffset)
+        if Alex or Yuval:
+            LExpM.SetPoint(0,102,-0.16+ystart_leglines)#zoom in x 280 or so
+            LExpM.SetPoint(1,106.5,-0.16+ystart_leglines)#zoom in x 280 or so
+        elif Moritz:
+            LExpM.SetPoint(0,105,+0.01+ystart_leglines)#zoom in x 280 or so
+            LExpM.SetPoint(1,110.5,+0.01+ystart_leglines)#zoom in x 280 or so            
+        else:
+            LExpM.SetPoint(0,130,0.072+ystart_leglines)
+            LExpM.SetPoint(1,190,0.072+ystart_leglines)        
         
-        #textExp = rt.TLatex(self.model.Xmin+11*xRange/100, self.model.Ymax-2.15*yRange/100*10, "Expected #pm 1, #pm 2 #sigma_{experiment}")
-        textExp = rt.TLatex(self.model.Xmin+11*xRange/100, self.model.Ymax-2.15*yRange/100*10+4000*samsyoffset, "Expected #pm 1 #sigma_{experiment}")
-        textExp.SetTextFont(42)
-        textExp.SetTextSize(0.040)
-        textExp.Draw()
-        self.c.textExp = textExp
+        LRad = rt.TGraph(2)
+        LRad.SetName("LRad")
+        LRad.SetTitle("LRad")
+        LRad.SetLineColor(rt.kGreen+1)
+        LRad.SetLineStyle(1)
+        LRad.SetLineWidth(2)      
+        #LRad.SetPoint(0,200,0.042+ystart_leglines)#zoom in x 280 or so
+        #LRad.SetPoint(1,211,0.042+ystart_leglines)#zoom in x 280 or so
+        
+        if Alex:
+            LRad.SetPoint(0,135,ystart_leglines-0.24)#alex
+            LRad.SetPoint(1,140,ystart_leglines-0.24)#alex
+        elif Yuval:
+            LRad.SetPoint(0,151,ystart_leglines-0.24)
+            LRad.SetPoint(1,157.5,ystart_leglines-0.24)   
+        elif Moritz:
+            LRad.SetPoint(0,163,ystart_leglines-0.04)
+            LRad.SetPoint(1,170,ystart_leglines-0.04)            
+        elif Viktor:
+            LRad.SetPoint(0,655,0.079+ystart_leglines)
+            LRad.SetPoint(1,725,0.079+ystart_leglines)        
+        
+        textObs = rt.TLatex(0.24,0.82, "Observed#pm1 #sigma_{theory}")
+        textObs.SetNDC()
+        textObs.SetTextFont(42)
+        textObs.SetTextSize(0.035)
+        textObs.Draw()
+        self.c.textObs = textObs
+        
+        textRadCor = rt.TLatex(0.61,0.77, "rad. corrections")
+        textRadCor.SetNDC()        
+        textRadCor.SetTextFont(42)
+        textRadCor.SetTextSize(0.030)
+        textRadCor.Draw()
+        self.c.textRadCor = textRadCor 
+        
+        
+        
+        
 
         LObs.Draw("LSAME")
         LObsM.Draw("LSAME")
@@ -266,6 +368,7 @@ class smsPlotABS(object):
         #LExpP2.Draw("LSAME")
         LExpM.Draw("LSAME")
         LExpP.Draw("LSAME")
+        LRad.Draw("LSAME")
         
         self.c.LObs = LObs
         self.c.LObsM = LObsM
@@ -273,6 +376,7 @@ class smsPlotABS(object):
         self.c.LExp = LExp
         self.c.LExpM = LExpM
         self.c.LExpP = LExpP
+        self.c.LRad = LRad
         #self.c.LExpM2 = LExpM2
         #self.c.LExpP2 = LExpP2
 
@@ -306,47 +410,54 @@ class smsPlotABS(object):
         try:
             self.OBS['nominal'].SetLineColor(color(self.OBS['colorLine']))
             self.OBS['nominal'].SetLineStyle(1)
+            self.OBS['nominal'].SetMarkerSize(0)
             self.OBS['nominal'].SetLineWidth(4)
             # observed + 1sigma
             self.OBS['plus'].SetLineColor(color(self.OBS['colorLine']))
-            self.OBS['plus'].SetLineStyle(1)
+            self.OBS['plus'].SetLineStyle(rt.kDashed)
+            self.OBS['plus'].SetMarkerSize(0)
             self.OBS['plus'].SetLineWidth(2)        
             # observed - 1sigma
             self.OBS['minus'].SetLineColor(color(self.OBS['colorLine']))
             self.OBS['minus'].SetLineStyle(1)
+            self.OBS['minus'].SetLineStyle(rt.kDashed)
+            self.OBS['minus'].SetMarkerSize(0)
             self.OBS['minus'].SetLineWidth(2)        
         except TypeError: # if no observed limit
             pass
+
         # expected + 2sigma
-        #self.EXP2['plus2'].SetLineColor(color(self.EXP2['colorLine']))
-        #self.EXP2['plus2'].SetLineStyle(7)
-        #self.EXP2['plus2'].SetLineWidth(2)                
+        self.EXP2['plus2'].SetLineColor(color(self.EXP2['colorLine']))
+        self.EXP2['plus2'].SetLineStyle(7)
+        self.EXP2['plus2'].SetLineWidth(2)                
         # expected + 1sigma
         self.EXP['plus'].SetLineColor(color(self.EXP['colorLine']))
         self.EXP['plus'].SetLineStyle(7)
         self.EXP['plus'].SetLineWidth(2)                
         # expected
         self.EXP['nominal'].SetLineColor(color(self.EXP['colorLine']))
-        self.EXP['nominal'].SetLineStyle(7)
+        self.EXP['nominal'].SetLineStyle(1)
         self.EXP['nominal'].SetLineWidth(4)        
         # expected - 2sigma
-        #self.EXP2['minus2'].SetLineColor(color(self.EXP2['colorLine']))
-        #self.EXP2['minus2'].SetLineStyle(7)
-        #self.EXP2['minus2'].SetLineWidth(2)          
+        self.EXP2['minus2'].SetLineColor(color(self.EXP2['colorLine']))
+        self.EXP2['minus2'].SetLineStyle(7)
+        self.EXP2['minus2'].SetLineWidth(2)          
         # expected - 1sigma
         self.EXP['minus'].SetLineColor(color(self.EXP['colorLine']))
         self.EXP['minus'].SetLineStyle(7)
         self.EXP['minus'].SetLineWidth(2)                      
         # DRAW LINES
         self.EXP['nominal'].Draw("LSAME")
-        #self.EXP2['plus2'].Draw("LSAME")
-        #self.EXP2['minus2'].Draw("LSAME")
+        if Yuval:
+            self.EXP2['plus2'].Draw("LSAME")
+            self.EXP2['minus2'].Draw("LSAME")
         self.EXP['plus'].Draw("LSAME")
         self.EXP['minus'].Draw("LSAME")
         try:
             self.OBS['nominal'].Draw("LSAME")
             self.OBS['plus'].Draw("LSAME")
             self.OBS['minus'].Draw("LSAME")        
+            print('made it here 3!')            
         except TypeError: # if no observed limit
             pass
 

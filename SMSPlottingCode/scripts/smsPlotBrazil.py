@@ -44,15 +44,15 @@ class smsPlotBrazil(smsPlotABS):
         # observed + 1sigma
         self.OBS['plus'].SetLineColor(1)
         self.OBS['plus'].SetLineWidth(2)
-        self.OBS['plus'].SetLineStyle(1)
+        self.OBS['plus'].SetLineStyle(2)
         # observed - 1sigma
         self.OBS['minus'].SetLineColor(1)
         self.OBS['minus'].SetLineWidth(2)
-        self.OBS['minus'].SetLineStyle(1)
+        self.OBS['minus'].SetLineStyle(2)
         # expected
         self.EXP['nominal'].SetLineColor(1)
         self.EXP['nominal'].SetLineWidth(4)
-        self.EXP['nominal'].SetLineStyle(2)        
+        self.EXP['nominal'].SetLineStyle(1)        
         # build one graph summing the + and - 1 sigma
         nP = self.EXP['plus'].GetN()
         nM = self.EXP['minus'].GetN()
@@ -133,7 +133,7 @@ class smsPlotBrazil(smsPlotABS):
         LExp.SetTitle("LExp")
         LExp.SetLineColor(1)
         LExp.SetLineWidth(4)
-        LExp.SetLineStyle(2)
+        LExp.SetLineStyle(1)
         LExp.SetPoint(0,self.model.Xmin+3*xRange/100, self.model.Ymax-2.00*yRange/100*10)
         LExp.SetPoint(1,self.model.Xmin+10*xRange/100, self.model.Ymax-2.00*yRange/100*10)
 
